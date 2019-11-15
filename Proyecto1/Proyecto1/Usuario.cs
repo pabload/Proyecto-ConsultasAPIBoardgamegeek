@@ -22,7 +22,6 @@ public class Usuario
     XmlDocument documentoUsuario= new XmlDocument();
     XmlDocument documentoJuegosUsuario = new XmlDocument();
     XmlDocument documentoDatosJuego =  new XmlDocument();
-    Boolean juegoEstaEnCache = true;
     public Usuario(String nombreUsuario, String rutaCacheUsuarios, String rutaCacheJuegos)
     {
 

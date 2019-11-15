@@ -55,7 +55,7 @@ public class Consultas
     }
     public static XmlDocument consultarAPIColeccionJuegosUsuario(string nombre)
     {
-        string URLConsulta = "https://www.boardgamegeek.com/xmlapi2/collection?username=" + nombre;
+        string URLConsulta = "https://www.boardgamegeek.com/xmlapi2/collection?username=" +nombre+"&own=1";
         return consultarAPI(URLConsulta);
 
     }

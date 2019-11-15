@@ -56,32 +56,38 @@ namespace Proyecto1
         {
             try
             {
+                treeViewAutores.Nodes.Clear();
                 Usuario nuevoUsuario = new Usuario(textBoxNombreUsuario.Text, directorioCacheUsuarios,directorioCacheJuegos);
+                TreeNode nodoAutores = new TreeNode("Autores", 0, 0);
+                nodoAutores.Tag = "nodoPadreAutor";
+                treeViewAutores.Nodes.Add(nodoAutores);
+                Console.WriteLine(treeViewAutores.Nodes.Count+"aaaaaaaaaaaaaaaaaaaaaaaa");
                 if (nuevoUsuario.nombre.Length >0)
                 {
-                    Console.WriteLine("Este vergas tiene este numero de autore: " + nuevoUsuario.listaAutores.Count);
-                    treeViewAutores.Nodes.Clear();
+                  
+                  
                     int contador = 0;
                     foreach (KeyValuePair<string, ArrayList> Autor in nuevoUsuario.listaAutores)
                     {
 
                         Console.WriteLine(Autor.Key);
-                        TreeNode nuevoNodo = new TreeNode(Autor.Key, 0, 0);
+                        TreeNode nuevoNodo = new TreeNode(Autor.Key,0,0);
                         nuevoNodo.Tag = Autor.Value;
                         //treeViewAutores.Nodes[0].Nodes.Add(Autor.Key);
-                        treeViewAutores.Nodes.Add(nuevoNodo);
+                        //treeViewAutores.Nodes.Add(nuevoNodo);
+                        treeViewAutores.Nodes[0].Nodes.Add(nuevoNodo);
                         ArrayList juegosDeAutor = Autor.Value;
                         //Console.WriteLine("esta madre es el key "+Autor.Key);
-                        String algo = Autor.Key;
+                        //String algo = Autor.Key;
                         foreach (ColeccionJuegosUsuario juego in juegosDeAutor)
                         {
                          
                             imageListAutores.Images.Add(Image.FromFile(juego.linkimagen));
                             int indexNuevaImage = imageListAutores.Images.Count - 1;
                             //TreeNode nuevoHijo = treeViewAutores.Nodes[contador].Nodes.Add()
-                            TreeNode nuevoHijo = treeViewAutores.Nodes[contador].Nodes.Add(juego.idjuego, juego.nombreJuego, indexNuevaImage);
-                            nuevoHijo.Tag = juego.idjuego;
-                           
+                            TreeNode nuevoHijo = treeViewAutores.Nodes[0].Nodes[contador].Nodes.Add(juego.idjuego, juego.nombreJuego, indexNuevaImage);
+                            //nuevoHijo.Tag = juego.idjuego;
+                            nuevoHijo.Tag = juego;
                         }
                         contador++;
                     }
@@ -103,26 +109,111 @@ namespace Proyecto1
         private void TreeViewAutores_AfterSelect(object sender, TreeViewEventArgs e) {
        
             listViewContenidos.Items.Clear();
-            if (e.Node.Nodes.Count != 0)
+            if (e.Node.Tag != "nodoPadreAutor")
             {
-                foreach (TreeNode juegoAutor in e.Node.Nodes)
+                if (e.Node.Nodes.Count != 0)
                 {
-                    XmlDocument documentoJuego = new XmlDocument();
-                    documentoJuego.Load(directorioCacheJuegos + "DatosDeJuego_" + juegoAutor.Tag);
-                    String nombre = documentoJuego.DocumentElement.SelectSingleNode("/items/item/name[@type='primary']").Attributes["value"].Value;
-                    String autor = documentoJuego.DocumentElement.SelectSingleNode("/items/item/link[@type='boardgamedesigner']").Attributes["value"].Value;
-                    String ilustrador = documentoJuego.DocumentElement.SelectSingleNode("/items/item/link[@type='boardgameartist']").Attributes["value"].Value;
-                    String linkimagen = directorioCacheJuegos + "imagen_" + juegoAutor.Tag + ".jpg";
-                    Console.WriteLine(linkimagen);
-                    ListViewItem item = new ListViewItem(juegoAutor.Text, imageListContendioListView.Images.Count);
-                    imageListContendioListView.Images.Add(Image.FromFile(linkimagen));
-                    listViewContenidos.Items.Add(item);
+        
+                    int contandorJuegos = 0;
+                    foreach (TreeNode juegoAutor in e.Node.Nodes)
+                    {
+                        panelDatosJuegoElegido.SendToBack();
+                        XmlDocument documentoJuego = new XmlDocument();
+                        ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)juegoAutor.Tag;
+                        ListViewItem item = new ListViewItem(juegoAutor.Text, imageListContendioListView.Images.Count);
+                        item.Tag = juego;
+                        //item.SubItems.Add(autor);
+                        //item.SubItems.Add(ilustrador);
+                        Console.WriteLine(imageListContendioListView.Images.Count+"LOL");
+                        imageListContendioListView.Images.Add(Image.FromFile(juego.linkimagen));
+                        listViewContenidos.Items.Add(item);
+                        contandorJuegos++;
+                    }
+                }
+                else
+                {
+                    ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)e.Node.Tag;
+                    panelDatosJuegoElegido.BringToFront();
+                    labelAutorJuego.Text = juego.nombreJuego;
+                    pictureBoxImagenJuego.Image = Image.FromFile(juego.linkimagen);
                 }
             }
             else
             {
-                Console.WriteLine("este es un juego");
+                Console.WriteLine("ES AUTOR");
+                panelDatosJuegoElegido.SendToBack();
+                foreach (TreeNode Autor in e.Node.Nodes)
+                {
+                    treeViewAutores.SelectedNode = null;
+
+                    ListViewItem item = new ListViewItem(Autor.Text,0);
+                    item.Tag = Autor.Tag;
+                    listViewContenidos.Items.Add(item);
+                    treeViewAutores.SelectedNode = null;
+                }
             }
+            
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            listViewContenidos.View = View.SmallIcon;
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            listViewContenidos.View = View.Details;
+            //listViewContenidos.View = View.Tile;
+            //listViewContenidos.View = View.List;
+        }
+
+        private void ListViewContenidos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (listViewContenidos.SelectedItems.Count > 0)
+            {
+                if (listViewContenidos.SelectedItems[0].ImageIndex == 0)
+                {
+                    ArrayList listaJuegos = (ArrayList)listViewContenidos.SelectedItems[0].Tag;
+                    listViewContenidos.Items.Clear();
+                    foreach (ColeccionJuegosUsuario juegoAutor in listaJuegos)
+                    {
+                        ListViewItem item = new ListViewItem(juegoAutor.nombreJuego, imageListContendioListView.Images.Count);
+                        //item.SubItems.Add(autor);
+                        //item.SubItems.Add(ilustrador);
+                        Console.WriteLine(imageListContendioListView.Images.Count);
+                        imageListContendioListView.Images.Add(Image.FromFile(juegoAutor.linkimagen));
+                        item.Tag = juegoAutor;
+                        listViewContenidos.Items.Add(item);
+                        //listViewContenidos.Items.Clear();
+                        //Console.WriteLine(nombre + "aaaaaaaaaaaaaaaaa");
+                        //Console.WriteLine(treeViewAutores.Nodes[0].Nodes[nombre]);
+
+                    }
+
+                }
+                else
+                {
+                   
+                    ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)listViewContenidos.SelectedItems[0].Tag;
+                    //Console.WriteLine(listViewContenidos.SelectedItems[0].Tag+"SSSSSS");
+                    panelDatosJuegoElegido.BringToFront();
+                    labelAutorJuego.Text = juego.nombreJuego;
+                    pictureBoxImagenJuego.Image = Image.FromFile(juego.linkimagen);
+                }
+             
+
+            }
+        }
+
+        private void Label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
