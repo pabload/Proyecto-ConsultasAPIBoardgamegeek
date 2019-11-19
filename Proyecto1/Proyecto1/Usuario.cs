@@ -17,7 +17,9 @@ public class Usuario
     public String fechaRegistro;
     public Dictionary<String, ArrayList> listaAutores = new Dictionary<String,ArrayList>();
     public Dictionary<String, ArrayList> listaNumeroJugadores = new Dictionary<String, ArrayList>();
-    public Dictionary<String, String> ejemplo = new Dictionary<String, String>();
+    public Dictionary<String, ArrayList> listaMecanicas = new Dictionary<String, ArrayList>();
+    public Dictionary<String, ArrayList> listaFamilias = new Dictionary<String, ArrayList>();
+    public Dictionary<String, ArrayList> listaCategorias = new Dictionary<String,ArrayList>();
     public String rutaDeCacheUsuarios;
     Boolean archivosEstaEnCache = true;
     XmlDocument documentoUsuario= new XmlDocument();
@@ -101,8 +103,9 @@ public class Usuario
             {
                 MessageBox.Show("ERRRO" + e);
             }
-            Thread.Sleep(500);
+            Thread.Sleep(400);
         }
+        MessageBox.Show("ya termino");
     }
 
     private void TomarAutoresDatosJuego(ColeccionJuegosUsuario Juego,String rutaCacheJuegos)
@@ -121,46 +124,19 @@ public class Usuario
             XmlNodeList autores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamedesigner']");
             XmlNodeList Ilustradores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgameartist']");
             XmlNodeList numeroJugadores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/poll[@name='suggested_numplayers']/results");
-            foreach (XmlNode autor in autores)
-            {
-                String nombreAutor = autor.Attributes["value"].Value;
-                Juego.listaDeAutores.Add(nombreAutor);
-                if (listaAutores.ContainsKey(nombreAutor))
-                {
-                    listaAutores[nombreAutor].Add(Juego);
-
-                }
-                else
-                {
-                    ArrayList juegosAutor = new ArrayList();
-                    listaAutores.Add(nombreAutor, juegosAutor);
-                    listaAutores[nombreAutor].Add(Juego);
-                }
-
-
-            }
+            XmlNodeList Mecanicas = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamemechanic']");
+            XmlNodeList familias = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamefamily']");
+            XmlNodeList Categorias = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamecategory']");
+            GuardarInformacionDiccionario(autores, listaAutores, Juego, Juego.listaDeAutores,"value");
+            GuardarInformacionDiccionario(numeroJugadores, listaNumeroJugadores, Juego, Juego.listaDeNumeroJugadores, "numplayers");
+            GuardarInformacionDiccionario(Mecanicas, listaMecanicas, Juego, Juego.listaDeMecanicas, "value");
+            GuardarInformacionDiccionario(familias, listaFamilias, Juego, Juego.listaDeFamilia, "value");
+            GuardarInformacionDiccionario(Categorias, listaCategorias, Juego, Juego.listaDeCategoria, "value");
             foreach (XmlNode ilustrador in Ilustradores)
             {
                 String nombreilustrador = ilustrador.Attributes["value"].Value;
                 Juego.listaDeilustradores.Add(nombreilustrador);
                
-            }
-            
-            foreach(XmlNode numjugador in numeroJugadores)
-            {
-                String numero = numjugador.Attributes["numplayers"].Value;
-                Juego.listaDeNumeroJugadores.Add(numero);
-                if (listaNumeroJugadores.ContainsKey(numero))
-                {
-                    listaNumeroJugadores[numero].Add(Juego);
-                }
-                else
-                {
-                    ArrayList juegosconNumero = new ArrayList();
-                    listaNumeroJugadores.Add(numero, juegosconNumero);
-                    listaNumeroJugadores[numero].Add(Juego);
-                }
-
             }
             documentoDatosJuego.Save(rutaCacheJuegos + "DatosDeJuego_" + Juego.idjuego);
         }
@@ -170,5 +146,26 @@ public class Usuario
         }
 
     }
-  
+
+    private void GuardarInformacionDiccionario(XmlNodeList lista, Dictionary<String, ArrayList> diccionario, ColeccionJuegosUsuario juego,ArrayList listadelJuego,String valorAtomar)
+    {
+        foreach (XmlNode nodo in lista)
+        {
+            String nombreElemento = nodo.Attributes[valorAtomar].Value;
+            listadelJuego.Add(nombreElemento);
+            if (diccionario.ContainsKey(nombreElemento))
+            {
+                diccionario[nombreElemento].Add(juego);
+
+            }
+            else
+            {
+                ArrayList NuevaListaDiccionario = new ArrayList();
+                diccionario.Add(nombreElemento, NuevaListaDiccionario);
+                diccionario[nombreElemento].Add(juego);
+            }
+
+
+        }
+    }
 }

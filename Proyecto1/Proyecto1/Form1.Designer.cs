@@ -37,6 +37,7 @@ namespace Proyecto1
             this.textBoxNombreUsuario = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.treeViewAutores = new System.Windows.Forms.TreeView();
             this.imageListTreeview = new System.Windows.Forms.ImageList(this.components);
             this.listViewContenidos = new System.Windows.Forms.ListView();
@@ -53,7 +54,9 @@ namespace Proyecto1
             this.labelNombreJuego = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBoxImagenJuego = new System.Windows.Forms.PictureBox();
+            this.labelInformacionInferior = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelDatosJuegoElegido.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImagenJuego)).BeginInit();
@@ -104,12 +107,22 @@ namespace Proyecto1
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Aquamarine;
+            this.panel2.Controls.Add(this.labelInformacionInferior);
+            this.panel2.Controls.Add(this.progressBar1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 522);
             this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1067, 32);
             this.panel2.TabIndex = 3;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.progressBar1.Location = new System.Drawing.Point(0, 0);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(209, 32);
+            this.progressBar1.TabIndex = 0;
             // 
             // treeViewAutores
             // 
@@ -123,6 +136,8 @@ namespace Proyecto1
             this.treeViewAutores.Size = new System.Drawing.Size(209, 436);
             this.treeViewAutores.StateImageList = this.imageListTreeview;
             this.treeViewAutores.TabIndex = 4;
+            this.treeViewAutores.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeViewAutores_BeforeCollapse);
+            this.treeViewAutores.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.TreeViewAutores_BeforeExpand);
             this.treeViewAutores.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewAutores_AfterSelect);
             // 
             // imageListTreeview
@@ -266,6 +281,15 @@ namespace Proyecto1
             this.pictureBoxImagenJuego.TabIndex = 0;
             this.pictureBoxImagenJuego.TabStop = false;
             // 
+            // labelInformacionInferior
+            // 
+            this.labelInformacionInferior.AutoSize = true;
+            this.labelInformacionInferior.Location = new System.Drawing.Point(216, 8);
+            this.labelInformacionInferior.Name = "labelInformacionInferior";
+            this.labelInformacionInferior.Size = new System.Drawing.Size(16, 17);
+            this.labelInformacionInferior.TabIndex = 1;
+            this.labelInformacionInferior.Text = "..";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -282,6 +306,8 @@ namespace Proyecto1
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panelDatosJuegoElegido.ResumeLayout(false);
             this.panelDatosJuegoElegido.PerformLayout();
@@ -322,6 +348,8 @@ namespace Proyecto1
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxAutoresJuego;
         private System.Windows.Forms.TextBox textBoxIlustradoresJuego;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label labelInformacionInferior;
     }
 }
 

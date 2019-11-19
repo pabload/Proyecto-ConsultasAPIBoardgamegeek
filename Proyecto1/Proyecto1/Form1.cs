@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -19,7 +20,8 @@ namespace Proyecto1
         String directorioCache = Application.LocalUserAppDataPath;
         String directorioCacheUsuarios;
         String directorioCacheJuegos;
-        public Dictionary<String, String> ListaJuegoAutor = new Dictionary<String, String>();
+        Usuario nuevoUsuario;
+        //public Dictionary<String, String> ListaJuegoAutor = new Dictionary<String, String>();
 
         public Image Image { get; private set; }
 
@@ -60,11 +62,15 @@ namespace Proyecto1
             try
             {
                 treeViewAutores.Nodes.Clear();
-                Usuario nuevoUsuario = new Usuario(textBoxNombreUsuario.Text, directorioCacheUsuarios,directorioCacheJuegos);
+                listViewContenidos.Clear();
+                listViewContenidos.BringToFront();
+                labelInformacionInferior.Text = "Cargando por favor espere..........";
+                nuevoUsuario = new Usuario(textBoxNombreUsuario.Text, directorioCacheUsuarios,directorioCacheJuegos);
                 Console.WriteLine(treeViewAutores.Nodes.Count+"aaaaaaaaaaaaaaaaaaaaaaaa");
                 if (nuevoUsuario.nombre.Length >0)
                 {
                     CrearNodos(nuevoUsuario);
+                    MessageBox.Show("ya termino");
                 }
                 else
                 {
@@ -85,36 +91,55 @@ namespace Proyecto1
 
         private void CrearNodos(Usuario nuevoUsuario)
         {
+            treeViewAutores.Nodes.Add("Autores", "Autores", "IconoAuto.png", "IconoAuto.png");
+            treeViewAutores.Nodes.Add("Juegos", "Juegos", "juegos-de-mesa.png", "juegos-de-mesa.png");
             InsertarNodosAutores(nuevoUsuario);
-            InsertarNodosJuegos(nuevoUsuario);
+            InsertarNodos(nuevoUsuario, "Juegos","Categorias",nuevoUsuario.listaCategorias);
+            InsertarNodos(nuevoUsuario, "Juegos", "Familias", nuevoUsuario.listaFamilias);
+            InsertarNodos(nuevoUsuario, "Juegos", "Mecanicas", nuevoUsuario.listaMecanicas);
+            InsertarNodos(nuevoUsuario, "Juegos", "Numero de jugadores", nuevoUsuario.listaNumeroJugadores);
+            progressBar1.Value = 0;
+            labelInformacionInferior.Text = "Informacion cargada correctamenete";
+
+
+
         }
 
-        private void InsertarNodosJuegos(Usuario nuevoUsuario)
+        private void InsertarNodos(Usuario nuevoUsuario,String nodoPadre,String clasificacion, Dictionary<String, ArrayList> diccionario)
         {
-            treeViewAutores.Nodes.Add("Juegos", "Juegos", "juegos-de-mesa.png", "juegos-de-mesa.png");
-            foreach (KeyValuePair<string, ArrayList> numeroJugadores in nuevoUsuario.listaNumeroJugadores)
+            try
             {
-
-                TreeNode nuevonodo = treeViewAutores.Nodes["Juegos"].Nodes.Add(numeroJugadores.Key, numeroJugadores.Key, 1, 1);
-                nuevonodo.Tag = numeroJugadores.Value;
-                ArrayList juegosDeAutor = numeroJugadores.Value;
-                foreach (ColeccionJuegosUsuario juego in juegosDeAutor)
+                TreeNode nuevoNodoPadre = treeViewAutores.Nodes[nodoPadre].Nodes.Add(clasificacion, clasificacion, "juegos-de-mesa.png", "juegos-de-mesa.png");
+                nuevoNodoPadre.Tag = diccionario;
+                foreach (KeyValuePair<String, ArrayList> clasifi in diccionario)
                 {
 
-                    imageListTreeview.Images.Add(juego.idjuego, Image.FromFile(juego.linkimagen));
-                    TreeNode nuevoHijo = treeViewAutores.Nodes["Juegos"].Nodes[numeroJugadores.Key].Nodes.Add(juego.idjuego, juego.nombreJuego, juego.idjuego, juego.idjuego);
-                    nuevoHijo.Tag = juego;
-                }
-            }
-        }
+                    TreeNode nuevonodo = treeViewAutores.Nodes[nodoPadre].Nodes[clasificacion].Nodes.Add(clasifi.Key, clasifi.Key, "juegos-de-mesa.png", "juegos-de-mesa.png");
+                    nuevonodo.Tag = clasifi.Value;
+                    ArrayList ArregloJuegos = (ArrayList)nuevonodo.Tag;
+                    foreach (ColeccionJuegosUsuario juego in ArregloJuegos)
+                    {
 
+                        imageListTreeview.Images.Add(juego.idjuego, Image.FromFile(juego.linkimagen));
+                        TreeNode nuevoHijo = treeViewAutores.Nodes[nodoPadre].Nodes[clasificacion].Nodes[clasifi.Key].Nodes.Add(juego.idjuego, juego.nombreJuego, juego.idjuego, juego.idjuego);
+                        nuevoHijo.Tag = juego;
+                    }
+                  
+                }
+                progressBar1.Value = progressBar1.Value + 20;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("erro aki bro: "+ex);
+            }
+
+        }
         private void InsertarNodosAutores(Usuario nuevoUsuario)
         {
 
-            treeViewAutores.Nodes.Add("Autores", "Autores", "IconoAuto.png", "IconoAuto.png");
+            //treeViewAutores.Nodes.Add("Autores", "Autores", "IconoAuto.png", "IconoAuto.png");
             foreach (KeyValuePair<string, ArrayList> Autor in nuevoUsuario.listaAutores)
             {
-        
                 TreeNode nuevonodo = treeViewAutores.Nodes["Autores"].Nodes.Add(Autor.Key, Autor.Key, 0, 0);
                 nuevonodo.Tag = Autor.Value;
                 ArrayList juegosDeAutor = Autor.Value;
@@ -125,7 +150,9 @@ namespace Proyecto1
                     TreeNode nuevoHijo = treeViewAutores.Nodes["Autores"].Nodes[Autor.Key].Nodes.Add(juego.idjuego, juego.nombreJuego, juego.idjuego,juego.idjuego);
                     nuevoHijo.Tag = juego;
                 }
+              
             }
+            progressBar1.Value = progressBar1.Value + 20;
         }
 
         private void TreeViewAutores_AfterSelect(object sender, TreeViewEventArgs e) {
@@ -140,38 +167,52 @@ namespace Proyecto1
                     CargarAutores(e.Node);
                     break;
                     case "Juegos":
-                     MessageBox.Show("ENTRO AKI");
-                    CargarNumeroJugadores(e.Node);
+                    MessageBox.Show("ENTRO AKI");
+                    CargarClasifiacionJuegos(e.Node);
                     break;
                 }
             }
             else
             {
-                if (e.Node.Nodes.Count == 0)
+                if(e.Node.Tag is ColeccionJuegosUsuario)
                 {
                     ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)e.Node.Tag;
                     CargarJuegoSeleccionado(juego);
                 }
-                else
+                if (e.Node.Tag is ArrayList)
                 {
-                    String Padre = e.Node.Parent.Text;
-                    if (Padre.Equals("Autores"))
-                    {
-
-
-                        ArrayList JuegosAutor = (ArrayList)e.Node.Tag;
-                        CargarJuegosAutorSeleccionado(JuegosAutor);
-                    }
-                    if (Padre.Equals("Juegos"))
-                    {
-
-                        ArrayList JuegosAutor = (ArrayList)e.Node.Tag;
-                        CargarJuegosAutorSeleccionado(JuegosAutor);
-
-                    }
+                    ArrayList JuegosAutor = (ArrayList)e.Node.Tag;
+                    CargarJuegosClasificacionSeleccionada(JuegosAutor);
                 }
+                if (e.Node.Tag is Dictionary<String, ArrayList>)
+                {
+                    Dictionary<String, ArrayList> ListaNumJuego = (Dictionary<String, ArrayList>)e.Node.Tag;
+                    CargarClasifiacionDejuegosPorNumeroJugadores(ListaNumJuego);
+                }
+
+                /*if (e.Node.Text.Equals("Numero de jugadores"))
+                    {
+                        MessageBox.Show("madre mia willy"+ e.Node.Tag.ToString());
+                        Dictionary<String, ArrayList> ListaNumJuego = (Dictionary<String, ArrayList>)e.Node.Tag;
+                        CargarClasifiacionDejuegosPorNumeroJugadores(ListaNumJuego);
+
+                    }*/
+
+                
             }          
             
+        }
+
+        private void CargarClasifiacionDejuegosPorNumeroJugadores(Dictionary<string, ArrayList> listaNumJuego)
+        {
+            listViewContenidos.Items.Clear();
+            foreach (KeyValuePair<string, ArrayList> numeroJugadores in listaNumJuego)
+            {
+                panelDatosJuegoElegido.SendToBack();
+                ListViewItem item = new ListViewItem(numeroJugadores.Key, "juegos-de-mesa.png");
+                item.Tag = numeroJugadores.Value;
+                listViewContenidos.Items.Add(item);
+            }
         }
 
         private void CargarJuegoSeleccionado(ColeccionJuegosUsuario juego)
@@ -210,7 +251,7 @@ namespace Proyecto1
 
         }
 
-        private void CargarJuegosAutorSeleccionado(ArrayList Juegos)
+        private void CargarJuegosClasificacionSeleccionada(ArrayList Juegos)
         {
             listViewContenidos.Items.Clear();
             foreach (ColeccionJuegosUsuario juegoAutor in Juegos)
@@ -243,17 +284,16 @@ namespace Proyecto1
                 treeViewAutores.SelectedNode = null;
             }
         }
-        private void CargarNumeroJugadores(TreeNode node)
+        private void CargarClasifiacionJuegos(TreeNode node)
         {
-
             panelDatosJuegoElegido.SendToBack();
-            foreach (TreeNode numero in node.Nodes)
+            foreach (TreeNode clasificacion in node.Nodes)
             {
                 treeViewAutores.SelectedNode = null;
 
-                ListViewItem item = new ListViewItem(numero.Text, 1);
+                ListViewItem item = new ListViewItem(clasificacion.Text, 1);
 
-                item.Tag = numero.Tag;
+                item.Tag = clasificacion.Tag;
                 item.ImageKey = "juegos-de-mesa.png";
                 listViewContenidos.Items.Add(item);
                 treeViewAutores.SelectedNode = null;
@@ -286,28 +326,33 @@ namespace Proyecto1
             if (listViewContenidos.SelectedItems.Count > 0)
             {
                 ListViewItem itemSeleccionado = listViewContenidos.SelectedItems[0];
-                if (itemSeleccionado.ImageKey.Equals("IconoAuto.png"))
+                MessageBox.Show(itemSeleccionado.Tag.GetType().ToString());
+                if (itemSeleccionado.Tag is ArrayList)
                 {
                     ArrayList juegos = (ArrayList)itemSeleccionado.Tag;
-                    CargarJuegosAutorSeleccionado(juegos);
+                    CargarJuegosClasificacionSeleccionada(juegos);
                 }
-                else
+                if (itemSeleccionado.Tag is ColeccionJuegosUsuario)
                 {
-                    if (itemSeleccionado.ImageKey.Equals("juegos-de-mesa.png"))
-                    {
-                        ArrayList juegos = (ArrayList)itemSeleccionado.Tag;
-                        CargarJuegosAutorSeleccionado(juegos);
-                    }
-                    else
-                    {
-                        ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)itemSeleccionado.Tag;
-                        CargarJuegoSeleccionado(juego);
-                    }
-                  
+                    ColeccionJuegosUsuario juego = (ColeccionJuegosUsuario)itemSeleccionado.Tag;
+                    CargarJuegoSeleccionado(juego);
                 }
-
-
+                if (itemSeleccionado.Tag is Dictionary<String, ArrayList>)
+                {
+                      Dictionary<String, ArrayList> ListaNumJuego = (Dictionary<String, ArrayList>)itemSeleccionado.Tag;
+                    CargarClasifiacionDejuegosPorNumeroJugadores(ListaNumJuego);
+                }
             }
+        }
+
+        private void TreeViewAutores_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+         
+        }
+
+        private void TreeViewAutores_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+           
         }
     }
 }

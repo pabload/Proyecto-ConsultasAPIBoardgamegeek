@@ -15,6 +15,9 @@ namespace Analizador
         public ArrayList listaDeAutores = new ArrayList();
         public ArrayList listaDeilustradores = new ArrayList();
         public ArrayList listaDeNumeroJugadores = new ArrayList();
+        public ArrayList listaDeMecanicas = new ArrayList();
+        public ArrayList listaDeFamilia = new ArrayList();
+        public ArrayList listaDeCategoria = new ArrayList();
         public ColeccionJuegosUsuario(String nombre, String link, String id)
         {
             nombreJuego = nombre;

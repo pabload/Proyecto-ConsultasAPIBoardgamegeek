@@ -31,14 +31,6 @@ public class Consultas
         XmlDocument xmlRespuesta = new XmlDocument();
         xmlRespuesta.LoadXml(cadenaRespuesta);
         return xmlRespuesta; 
-        /*WebRequest peticion = WebRequest.Create(URL);
-        WebResponse respuesta = peticion.GetResponse();
-        Stream flujo = respuesta.GetResponseStream();
-        StreamReader lectorFlujo = new StreamReader(flujo);
-        string cadenaRespuesta = lectorFlujo.ReadToEnd();
-        XmlDocument xmlRespuesta = new XmlDocument();
-        xmlRespuesta.LoadXml(cadenaRespuesta);
-        return xmlRespuesta;*/
 
     }
     public static XmlDocument consultarAPIUsuario(string usuario)
