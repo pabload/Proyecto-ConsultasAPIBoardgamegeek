@@ -37,6 +37,7 @@ namespace Proyecto1
             this.textBoxNombreUsuario = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.labelInformacionInferior = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.treeViewAutores = new System.Windows.Forms.TreeView();
             this.imageListTreeview = new System.Windows.Forms.ImageList(this.components);
@@ -47,6 +48,7 @@ namespace Proyecto1
             this.imageListContendioListView = new System.Windows.Forms.ImageList(this.components);
             this.panel3 = new System.Windows.Forms.Panel();
             this.panelDatosJuegoElegido = new System.Windows.Forms.Panel();
+            this.richTextBoxDescripcionJuego = new System.Windows.Forms.RichTextBox();
             this.textBoxIlustradoresJuego = new System.Windows.Forms.TextBox();
             this.textBoxAutoresJuego = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -54,12 +56,13 @@ namespace Proyecto1
             this.labelNombreJuego = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBoxImagenJuego = new System.Windows.Forms.PictureBox();
-            this.labelInformacionInferior = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelDatosJuegoElegido.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImagenJuego)).BeginInit();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -115,6 +118,15 @@ namespace Proyecto1
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1067, 32);
             this.panel2.TabIndex = 3;
+            // 
+            // labelInformacionInferior
+            // 
+            this.labelInformacionInferior.AutoSize = true;
+            this.labelInformacionInferior.Location = new System.Drawing.Point(216, 8);
+            this.labelInformacionInferior.Name = "labelInformacionInferior";
+            this.labelInformacionInferior.Size = new System.Drawing.Size(16, 17);
+            this.labelInformacionInferior.TabIndex = 1;
+            this.labelInformacionInferior.Text = "..";
             // 
             // progressBar1
             // 
@@ -199,12 +211,8 @@ namespace Proyecto1
             // 
             // panelDatosJuegoElegido
             // 
-            this.panelDatosJuegoElegido.Controls.Add(this.textBoxIlustradoresJuego);
-            this.panelDatosJuegoElegido.Controls.Add(this.textBoxAutoresJuego);
-            this.panelDatosJuegoElegido.Controls.Add(this.label5);
-            this.panelDatosJuegoElegido.Controls.Add(this.label4);
-            this.panelDatosJuegoElegido.Controls.Add(this.labelNombreJuego);
-            this.panelDatosJuegoElegido.Controls.Add(this.label2);
+            this.panelDatosJuegoElegido.Controls.Add(this.richTextBoxDescripcionJuego);
+            this.panelDatosJuegoElegido.Controls.Add(this.panel4);
             this.panelDatosJuegoElegido.Controls.Add(this.pictureBoxImagenJuego);
             this.panelDatosJuegoElegido.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDatosJuegoElegido.Location = new System.Drawing.Point(0, 0);
@@ -213,9 +221,17 @@ namespace Proyecto1
             this.panelDatosJuegoElegido.Size = new System.Drawing.Size(858, 436);
             this.panelDatosJuegoElegido.TabIndex = 6;
             // 
+            // richTextBoxDescripcionJuego
+            // 
+            this.richTextBoxDescripcionJuego.Location = new System.Drawing.Point(267, 240);
+            this.richTextBoxDescripcionJuego.Name = "richTextBoxDescripcionJuego";
+            this.richTextBoxDescripcionJuego.Size = new System.Drawing.Size(498, 156);
+            this.richTextBoxDescripcionJuego.TabIndex = 9;
+            this.richTextBoxDescripcionJuego.Text = "";
+            // 
             // textBoxIlustradoresJuego
             // 
-            this.textBoxIlustradoresJuego.Location = new System.Drawing.Point(495, 153);
+            this.textBoxIlustradoresJuego.Location = new System.Drawing.Point(158, 120);
             this.textBoxIlustradoresJuego.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxIlustradoresJuego.Multiline = true;
             this.textBoxIlustradoresJuego.Name = "textBoxIlustradoresJuego";
@@ -225,7 +241,7 @@ namespace Proyecto1
             // 
             // textBoxAutoresJuego
             // 
-            this.textBoxAutoresJuego.Location = new System.Drawing.Point(495, 107);
+            this.textBoxAutoresJuego.Location = new System.Drawing.Point(158, 74);
             this.textBoxAutoresJuego.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxAutoresJuego.Multiline = true;
             this.textBoxAutoresJuego.Name = "textBoxAutoresJuego";
@@ -236,7 +252,7 @@ namespace Proyecto1
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(340, 153);
+            this.label5.Location = new System.Drawing.Point(3, 120);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(148, 17);
             this.label5.TabIndex = 4;
@@ -245,7 +261,7 @@ namespace Proyecto1
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(340, 111);
+            this.label4.Location = new System.Drawing.Point(3, 78);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(123, 17);
             this.label4.TabIndex = 3;
@@ -254,7 +270,7 @@ namespace Proyecto1
             // labelNombreJuego
             // 
             this.labelNombreJuego.AutoSize = true;
-            this.labelNombreJuego.Location = new System.Drawing.Point(469, 63);
+            this.labelNombreJuego.Location = new System.Drawing.Point(132, 30);
             this.labelNombreJuego.Name = "labelNombreJuego";
             this.labelNombreJuego.Size = new System.Drawing.Size(68, 17);
             this.labelNombreJuego.TabIndex = 2;
@@ -264,7 +280,7 @@ namespace Proyecto1
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(340, 63);
+            this.label2.Location = new System.Drawing.Point(3, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(124, 17);
             this.label2.TabIndex = 1;
@@ -273,22 +289,26 @@ namespace Proyecto1
             // 
             // pictureBoxImagenJuego
             // 
-            this.pictureBoxImagenJuego.Location = new System.Drawing.Point(67, 48);
+            this.pictureBoxImagenJuego.Location = new System.Drawing.Point(23, 27);
             this.pictureBoxImagenJuego.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxImagenJuego.Name = "pictureBoxImagenJuego";
-            this.pictureBoxImagenJuego.Size = new System.Drawing.Size(251, 350);
+            this.pictureBoxImagenJuego.Size = new System.Drawing.Size(228, 369);
             this.pictureBoxImagenJuego.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxImagenJuego.TabIndex = 0;
             this.pictureBoxImagenJuego.TabStop = false;
             // 
-            // labelInformacionInferior
+            // panel4
             // 
-            this.labelInformacionInferior.AutoSize = true;
-            this.labelInformacionInferior.Location = new System.Drawing.Point(216, 8);
-            this.labelInformacionInferior.Name = "labelInformacionInferior";
-            this.labelInformacionInferior.Size = new System.Drawing.Size(16, 17);
-            this.labelInformacionInferior.TabIndex = 1;
-            this.labelInformacionInferior.Text = "..";
+            this.panel4.Controls.Add(this.label2);
+            this.panel4.Controls.Add(this.labelNombreJuego);
+            this.panel4.Controls.Add(this.textBoxIlustradoresJuego);
+            this.panel4.Controls.Add(this.label4);
+            this.panel4.Controls.Add(this.textBoxAutoresJuego);
+            this.panel4.Controls.Add(this.label5);
+            this.panel4.Location = new System.Drawing.Point(267, 27);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(498, 207);
+            this.panel4.TabIndex = 10;
             // 
             // Form1
             // 
@@ -310,8 +330,9 @@ namespace Proyecto1
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panelDatosJuegoElegido.ResumeLayout(false);
-            this.panelDatosJuegoElegido.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImagenJuego)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -350,6 +371,8 @@ namespace Proyecto1
         private System.Windows.Forms.TextBox textBoxIlustradoresJuego;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label labelInformacionInferior;
+        private System.Windows.Forms.RichTextBox richTextBoxDescripcionJuego;
+        private System.Windows.Forms.Panel panel4;
     }
 }
 

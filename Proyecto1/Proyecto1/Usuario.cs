@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading;
 using Analizador;
 using System.Collections.Generic;
+using System.Drawing;
 
 public class Usuario
 {
@@ -15,6 +16,8 @@ public class Usuario
     public String nombre;
     public String apellidos;
     public String fechaRegistro;
+    //public ArrayList ImagenesJuegos = new ArrayList();
+    public Dictionary<String, Image> ImagenesJuegos = new Dictionary<String, Image>();
     public Dictionary<String, ArrayList> listaAutores = new Dictionary<String,ArrayList>();
     public Dictionary<String, ArrayList> listaNumeroJugadores = new Dictionary<String, ArrayList>();
     public Dictionary<String, ArrayList> listaMecanicas = new Dictionary<String, ArrayList>();
@@ -25,6 +28,7 @@ public class Usuario
     XmlDocument documentoUsuario= new XmlDocument();
     XmlDocument documentoJuegosUsuario = new XmlDocument();
     XmlDocument documentoDatosJuego =  new XmlDocument();
+    int c = 0;
     public Usuario(String nombreUsuario, String rutaCacheUsuarios, String rutaCacheJuegos)
     {
         ComprobarExistenciaCache(nombreUsuario, rutaCacheUsuarios);
@@ -92,20 +96,24 @@ public class Usuario
             {
                 if (ComprobarExistenciaCache == false)
                 {
+                    c++;
+                    Console.WriteLine("no esta en cache"+c);
                     WebClient cliente = new WebClient();
                     cliente.DownloadFile(link, rutaCacheJuegos + "imagen_" + idJuego + ".jpg");
+                    Thread.Sleep(700);
                 }
                 link = rutaCacheJuegos + "imagen_" + idJuego + ".jpg";
-                ColeccionJuegosUsuario NuevoJuego = new ColeccionJuegosUsuario(nombreJuego, link, idJuego);
+                Image imagenjuego = Image.FromFile(link);
+                ImagenesJuegos.Add(idJuego, imagenjuego);
+                ColeccionJuegosUsuario NuevoJuego = new ColeccionJuegosUsuario(nombreJuego, imagenjuego, idJuego);
                 TomarAutoresDatosJuego(NuevoJuego, rutaCacheJuegos);
             }
             catch (Exception e)
             {
                 MessageBox.Show("ERRRO" + e);
             }
-            Thread.Sleep(400);
         }
-        MessageBox.Show("ya termino");
+        //MessageBox.Show("ya termino");
     }
 
     private void TomarAutoresDatosJuego(ColeccionJuegosUsuario Juego,String rutaCacheJuegos)
@@ -121,17 +129,19 @@ public class Usuario
             {
                 documentoDatosJuego = Consultas.consultarDatosJuego(Juego.idjuego);
             }
+            String descripcionJuego = documentoDatosJuego.DocumentElement.SelectSingleNode("/items/item/description").InnerText;
+            Juego.descripcionJuego = descripcionJuego;
             XmlNodeList autores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamedesigner']");
             XmlNodeList Ilustradores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgameartist']");
             XmlNodeList numeroJugadores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/poll[@name='suggested_numplayers']/results");
             XmlNodeList Mecanicas = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamemechanic']");
             XmlNodeList familias = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamefamily']");
             XmlNodeList Categorias = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamecategory']");
-            GuardarInformacionDiccionario(autores, listaAutores, Juego, Juego.listaDeAutores,"value");
-            GuardarInformacionDiccionario(numeroJugadores, listaNumeroJugadores, Juego, Juego.listaDeNumeroJugadores, "numplayers");
-            GuardarInformacionDiccionario(Mecanicas, listaMecanicas, Juego, Juego.listaDeMecanicas, "value");
-            GuardarInformacionDiccionario(familias, listaFamilias, Juego, Juego.listaDeFamilia, "value");
-            GuardarInformacionDiccionario(Categorias, listaCategorias, Juego, Juego.listaDeCategoria, "value");
+            GuardarInformacionDiccionario(autores, listaAutores, Juego, Juego.listaDeAutores,"value","autores");
+            GuardarInformacionDiccionario(numeroJugadores, listaNumeroJugadores, Juego, Juego.listaDeNumeroJugadores, "numplayers", "numeroJugadores");
+            GuardarInformacionDiccionario(Mecanicas, listaMecanicas, Juego, Juego.listaDeMecanicas, "value", "Mecanicas");
+            GuardarInformacionDiccionario(familias, listaFamilias, Juego, Juego.listaDeFamilia, "value", "familias");
+            GuardarInformacionDiccionario(Categorias, listaCategorias, Juego, Juego.listaDeCategoria, "value", "Categorias");
             foreach (XmlNode ilustrador in Ilustradores)
             {
                 String nombreilustrador = ilustrador.Attributes["value"].Value;
@@ -147,11 +157,29 @@ public class Usuario
 
     }
 
-    private void GuardarInformacionDiccionario(XmlNodeList lista, Dictionary<String, ArrayList> diccionario, ColeccionJuegosUsuario juego,ArrayList listadelJuego,String valorAtomar)
+    private void GuardarInformacionDiccionario(XmlNodeList lista, Dictionary<String, ArrayList> diccionario, ColeccionJuegosUsuario juego,ArrayList listadelJuego,String valorAtomar,String nombrelistaNodo)
     {
-        foreach (XmlNode nodo in lista)
+        if (lista.Count == 0)
         {
-            String nombreElemento = nodo.Attributes[valorAtomar].Value;
+            String nombreElemento="";
+            switch (nombrelistaNodo)
+            {
+                case "autores" :
+                nombreElemento = "(Uncredited)";
+                break;
+                case "Mecanicas":
+                nombreElemento = "sin mecaninas";
+                break;
+                case "numeroJugadores":
+                nombreElemento = "sin numero de juegadores";
+                break;
+                case "familias":
+                nombreElemento = "sin familias";
+                break;
+                case "Categorias":
+                nombreElemento = "sin categorias";
+                break;
+            }
             listadelJuego.Add(nombreElemento);
             if (diccionario.ContainsKey(nombreElemento))
             {
@@ -164,8 +192,35 @@ public class Usuario
                 diccionario.Add(nombreElemento, NuevaListaDiccionario);
                 diccionario[nombreElemento].Add(juego);
             }
+        }
+        else
+        {
+            foreach (XmlNode nodo in lista)
+            {
+                String nombreElemento = nodo.Attributes[valorAtomar].Value;
+                Console.WriteLine(nombrelistaNodo);
+                if (nombrelistaNodo.Equals("numeroJugadores"))
+                {
+                    if (nombreElemento.Contains("+"))
+                    {
+                        return;
+                    }
+                }
+                listadelJuego.Add(nombreElemento);
+                if (diccionario.ContainsKey(nombreElemento))
+                {
+                    diccionario[nombreElemento].Add(juego);
+
+                }
+                else
+                {
+                    ArrayList NuevaListaDiccionario = new ArrayList();
+                    diccionario.Add(nombreElemento, NuevaListaDiccionario);
+                    diccionario[nombreElemento].Add(juego);
+                }
 
 
+            }
         }
     }
 }
