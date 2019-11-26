@@ -57,4 +57,10 @@ public class Consultas
         return consultarAPI(URLConsulta);
 
     }
+    public static XmlDocument consultarDatosPartidasJuego(String nombreUsuario,string IdJuego)
+    {
+        string URLConsulta = "https://boardgamegeek.com/xmlapi2/plays?username="+nombreUsuario+"&id="+IdJuego;
+        return consultarAPI(URLConsulta);
+
+    }
 }

@@ -80,7 +80,16 @@ namespace Proyecto1
                     listViewContenidos.Items.Clear();
                     treeViewAutores.Nodes.Clear();
                 }
-                      
+                foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
+                {
+                    //Console.WriteLine(adversario.Key+" tiene: "+adversario.Value.Count);
+                    foreach(Adversario infoad in adversario.Value)
+                    {
+                        Console.WriteLine("idjuego: "+infoad.idjuego);
+                        Console.WriteLine(adversario.Key + " en el juego " + infoad.nombreJuego + " gano " + infoad.vecesGanadas + "  y perdio  " + infoad.vecesPerdidas);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -243,10 +252,12 @@ namespace Proyecto1
         {
           listViewContenidos.Items.Clear();
           panelDatosJuegoElegido.BringToFront();
-          labelNombreJuego.Text = juego.nombreJuego;
           textBoxAutoresJuego.Clear();
           textBoxIlustradoresJuego.Clear();
-          int contador = 0;
+          richTextBoxDescripcionJuego.Clear();
+          dataGridView1.Rows.Clear();
+          labelNombreJuego.Text = juego.nombreJuego;
+            int contador = 0;
           foreach (String autor in juego.listaDeAutores)
           {
               contador++;
@@ -271,11 +282,17 @@ namespace Proyecto1
 
           }
           pictureBoxImagenJuego.Image = juego.imagenJuego;
-            richTextBoxDescripcionJuego.Text = juego.descripcionJuego;
-
+          richTextBoxDescripcionJuego.Text = juego.descripcionJuego;
+          Console.WriteLine("numeros de veces jugadaaaaaaaas " + juego.numeroDePartidas);
+            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+juego.juegosJugadosPorNumeroJugador.Count);
+            Console.WriteLine(juego.idjuego);
+            labelNumeroTotalPartidas.Text = juego.numeroDePartidas.ToString();
+          foreach (KeyValuePair<String, InfoPartidas> PartidaconNumJugadores in juego.juegosJugadosPorNumeroJugador)
+            {
+                dataGridView1.Rows.Add(PartidaconNumJugadores.Key, PartidaconNumJugadores.Value.partidasGanadas, PartidaconNumJugadores.Value.partidasPerdidas);
+            }
 
         }
-
         private void CargarJuegosClasificacionSeleccionada(ArrayList Juegos)
         {
             listViewContenidos.Items.Clear();
@@ -287,7 +304,6 @@ namespace Proyecto1
                 item.SubItems.Add(juegoAutor.idjuego);
                 item.Tag = juegoAutor;
                 Console.WriteLine(juegoAutor.linkimagen+"aaaaaaaaaaaaaaa");
-                //imageListContendioListView.Images.Add(juegoAutor.imagenJuego);
                 listViewContenidos.Items.Add(item);
             }
             
@@ -380,6 +396,16 @@ namespace Proyecto1
         private void TreeViewAutores_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
            
+        }
+
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void Label3_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

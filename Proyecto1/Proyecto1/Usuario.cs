@@ -9,6 +9,7 @@ using System.Threading;
 using Analizador;
 using System.Collections.Generic;
 using System.Drawing;
+using Proyecto1;
 
 public class Usuario
 {
@@ -16,21 +17,25 @@ public class Usuario
     public String nombre;
     public String apellidos;
     public String fechaRegistro;
-    //public ArrayList ImagenesJuegos = new ArrayList();
+    public String idDelUsuario;
     public Dictionary<String, Image> ImagenesJuegos = new Dictionary<String, Image>();
     public Dictionary<String, ArrayList> listaAutores = new Dictionary<String,ArrayList>();
     public Dictionary<String, ArrayList> listaNumeroJugadores = new Dictionary<String, ArrayList>();
     public Dictionary<String, ArrayList> listaMecanicas = new Dictionary<String, ArrayList>();
     public Dictionary<String, ArrayList> listaFamilias = new Dictionary<String, ArrayList>();
     public Dictionary<String, ArrayList> listaCategorias = new Dictionary<String,ArrayList>();
+    public Dictionary<String, ArrayList> listaAdversarios = new Dictionary<String,ArrayList>();
     public String rutaDeCacheUsuarios;
     Boolean archivosEstaEnCache = true;
     XmlDocument documentoUsuario= new XmlDocument();
     XmlDocument documentoJuegosUsuario = new XmlDocument();
     XmlDocument documentoDatosJuego =  new XmlDocument();
+    XmlDocument documentoPartidasJuego = new XmlDocument();
     int c = 0;
     public Usuario(String nombreUsuario, String rutaCacheUsuarios, String rutaCacheJuegos)
     {
+        rutaDeCacheUsuarios = rutaCacheUsuarios;
+        nombreDelUsuario = nombreUsuario;
         ComprobarExistenciaCache(nombreUsuario, rutaCacheUsuarios);
         AlamacenarDatosUsuario(rutaCacheJuegos);
     }
@@ -73,6 +78,8 @@ public class Usuario
         nombre = documentoUsuario.DocumentElement.SelectSingleNode("/user/firstname").Attributes[0].Value;
         apellidos = documentoUsuario.DocumentElement.SelectSingleNode("/user/lastname").Attributes[0].Value;
         fechaRegistro = documentoUsuario.DocumentElement.SelectSingleNode("/user/yearregistered").Attributes[0].Value;
+        idDelUsuario = documentoUsuario.DocumentElement.SelectSingleNode("/user").Attributes["id"].Value;
+        MessageBox.Show(idDelUsuario);
         if (nombre.Length != 0)
         {
             ObtenerJuegosdeColeccion(archivosEstaEnCache,rutaCacheJuegos);
@@ -129,8 +136,7 @@ public class Usuario
             {
                 documentoDatosJuego = Consultas.consultarDatosJuego(Juego.idjuego);
             }
-            String descripcionJuego = documentoDatosJuego.DocumentElement.SelectSingleNode("/items/item/description").InnerText;
-            Juego.descripcionJuego = descripcionJuego;
+            Juego.descripcionJuego = documentoDatosJuego.DocumentElement.SelectSingleNode("/items/item/description").InnerText;
             XmlNodeList autores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgamedesigner']");
             XmlNodeList Ilustradores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/link[@type='boardgameartist']");
             XmlNodeList numeroJugadores = documentoDatosJuego.DocumentElement.SelectNodes("/items/item/poll[@name='suggested_numplayers']/results");
@@ -142,6 +148,7 @@ public class Usuario
             GuardarInformacionDiccionario(Mecanicas, listaMecanicas, Juego, Juego.listaDeMecanicas, "value", "Mecanicas");
             GuardarInformacionDiccionario(familias, listaFamilias, Juego, Juego.listaDeFamilia, "value", "familias");
             GuardarInformacionDiccionario(Categorias, listaCategorias, Juego, Juego.listaDeCategoria, "value", "Categorias");
+            RegistrarJuegosJugados(Juego, nombre);
             foreach (XmlNode ilustrador in Ilustradores)
             {
                 String nombreilustrador = ilustrador.Attributes["value"].Value;
@@ -155,6 +162,102 @@ public class Usuario
             MessageBox.Show("aki de error"+ex);
         }
 
+    }
+
+    private void RegistrarJuegosJugados(ColeccionJuegosUsuario juego, string nombre)
+    {
+        try
+        {
+            if (File.Exists(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego))
+            {
+                documentoPartidasJuego.Load(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);
+                string fecha = File.GetLastWriteTime(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego).ToString("dd-MM-yyyy");
+                //MessageBox.Show(fecha);
+                if (fecha == DateTime.Today.ToString("dd-MM-yyyy"))
+                {
+                    //MessageBox.Show("aaa oc");
+                }
+
+            }
+            else
+            {
+                documentoPartidasJuego = Consultas.consultarDatosPartidasJuego(nombreDelUsuario, juego.idjuego);
+            }
+            juego.numeroDePartidas= int.Parse(documentoPartidasJuego.DocumentElement.SelectSingleNode("/plays").Attributes["total"].Value);
+            XmlNodeList listaPartidas = documentoPartidasJuego.DocumentElement.SelectNodes("/plays/play");
+            foreach (XmlNode partida in listaPartidas)
+            {
+                XmlNodeList listaJugadoresPartida = partida.SelectNodes("players/player");
+                int numeroJugadores = listaJugadoresPartida.Count;
+                //MessageBox.Show("numero " + numeroJugadores.ToString()+" "+juego.idjuego);
+                foreach(XmlNode jugador in listaJugadoresPartida)
+                {
+                    String NombreJugador = jugador.Attributes["name"].Value;
+                    String idUsuario = jugador.Attributes["userid"].Value;
+                    int PartidasGanadas = 0;
+                    if (jugador.Attributes["win"].Value.Equals("1"))
+                    {
+                        PartidasGanadas = 1;
+                    }
+                    if (NombreJugador.Equals(nombre)||idUsuario.Equals(idDelUsuario))
+                    {
+                        //MessageBox.Show("encontro usuario" + NombreJugador);
+                        if (!juego.juegosJugadosPorNumeroJugador.ContainsKey(numeroJugadores.ToString()))
+                        {
+                            InfoPartidas infp = new InfoPartidas(1, PartidasGanadas, 1-PartidasGanadas);
+                            juego.juegosJugadosPorNumeroJugador.Add(numeroJugadores.ToString(),infp);
+                            Console.WriteLine("se guardo" + numeroJugadores.ToString() + " juagadores");
+                          
+                        }
+                        else
+                        {
+                            juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].NumeroTotalPartidasPorNumeroJugadores++;
+                            juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas = juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas + PartidasGanadas;
+                            juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasPerdidas = juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].NumeroTotalPartidasPorNumeroJugadores - juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas;
+
+                        }
+                    }
+                    else
+                    {
+                        //MessageBox.Show("no entro con usuario" + NombreJugador);
+                        if (!listaAdversarios.ContainsKey(NombreJugador))
+                        {
+                            ArrayList listaPartidaAdversario = new ArrayList();
+                            Adversario infoAd = new Adversario(juego.nombreJuego, juego.idjuego, PartidasGanadas, 1 - PartidasGanadas,1);
+                            listaPartidaAdversario.Add(infoAd);
+                            listaAdversarios.Add(NombreJugador, listaPartidaAdversario);
+                            //MessageBox.Show("guaardo a: " + NombreJugador);
+                        }
+                        else
+                        {
+                            Boolean tieneRegistradoJuego = false; 
+                            foreach(Adversario infoad in listaAdversarios[NombreJugador])
+                            {
+                                //MessageBox.Show(listaAdversarios[NombreJugador].Count.ToString());
+                                if (infoad.nombreJuego.Equals(juego.nombreJuego) || infoad.nombreJuego.Equals(juego.idjuego))
+                                {
+                                    //MessageBox.Show("entro caballero "+NombreJugador);
+                                    infoad.numeroTotalPartidas++;
+                                    infoad.vecesGanadas = infoad.vecesGanadas + PartidasGanadas;
+                                    infoad.vecesPerdidas = infoad.numeroTotalPartidas - infoad.vecesGanadas;
+                                    tieneRegistradoJuego = true;
+                                }
+                            }
+                            if(tieneRegistradoJuego == false)
+                            {
+                                Adversario infoAd = new Adversario(juego.nombreJuego, juego.idjuego, PartidasGanadas, 1 - PartidasGanadas, 1);
+                                listaAdversarios[NombreJugador].Add(infoAd);
+                            }
+                        }
+                    }
+                }
+            }
+            documentoPartidasJuego.Save(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);
+        }
+        catch(Exception ex)
+        {
+            MessageBox.Show(ex.ToString());
+        }
     }
 
     private void GuardarInformacionDiccionario(XmlNodeList lista, Dictionary<String, ArrayList> diccionario, ColeccionJuegosUsuario juego,ArrayList listadelJuego,String valorAtomar,String nombrelistaNodo)
