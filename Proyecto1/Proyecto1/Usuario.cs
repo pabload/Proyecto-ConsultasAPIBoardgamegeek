@@ -188,23 +188,27 @@ public class Usuario
             foreach (XmlNode partida in listaPartidas)
             {
                 XmlNodeList listaJugadoresPartida = partida.SelectNodes("players/player");
+                String idPartida = partida.Attributes["id"].Value;
                 int numeroJugadores = listaJugadoresPartida.Count;
-                //MessageBox.Show("numero " + numeroJugadores.ToString()+" "+juego.idjuego);
-                foreach(XmlNode jugador in listaJugadoresPartida)
+                String NombreGanadorPartida = "";
+                foreach (XmlNode jugador in listaJugadoresPartida)
                 {
-                    String NombreJugador = jugador.Attributes["name"].Value;
-                    String idUsuario = jugador.Attributes["userid"].Value;
-                    int PartidasGanadas = 0;
+                    String NombreJugadorPartida = jugador.Attributes["name"].Value;
+                    String idUsuarioJugador = jugador.Attributes["userid"].Value;
+                    int resultadoPartida = 0;
+                    Boolean gano = false;
                     if (jugador.Attributes["win"].Value.Equals("1"))
                     {
-                        PartidasGanadas = 1;
+                        resultadoPartida = 1;
+                        NombreGanadorPartida = NombreJugadorPartida;
+                        gano = true;
+                        //if (NombreGanadorPartida.ToLower().Equals(nombre)) { MessageBox.Show("el usuario gano este juego");}
                     }
-                    if (NombreJugador.Equals(nombre)||idUsuario.Equals(idDelUsuario))
+                    if (NombreJugadorPartida.ToLower().Equals(nombre)||idUsuarioJugador.Equals(idDelUsuario))
                     {
-                        //MessageBox.Show("encontro usuario" + NombreJugador);
                         if (!juego.juegosJugadosPorNumeroJugador.ContainsKey(numeroJugadores.ToString()))
                         {
-                            InfoPartidas infp = new InfoPartidas(1, PartidasGanadas, 1-PartidasGanadas);
+                            InfoPartidas infp = new InfoPartidas(1, resultadoPartida, 1-resultadoPartida);
                             juego.juegosJugadosPorNumeroJugador.Add(numeroJugadores.ToString(),infp);
                             Console.WriteLine("se guardo" + numeroJugadores.ToString() + " juagadores");
                           
@@ -212,44 +216,73 @@ public class Usuario
                         else
                         {
                             juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].NumeroTotalPartidasPorNumeroJugadores++;
-                            juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas = juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas + PartidasGanadas;
+                            juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas = juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas + resultadoPartida;
                             juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasPerdidas = juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].NumeroTotalPartidasPorNumeroJugadores - juego.juegosJugadosPorNumeroJugador[numeroJugadores.ToString()].partidasGanadas;
 
                         }
+                      
                     }
-                    else
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////
+                    if (!NombreJugadorPartida.ToLower().Equals(nombre)&&!idUsuarioJugador.Equals(idDelUsuario))
                     {
-                        //MessageBox.Show("no entro con usuario" + NombreJugador);
-                        if (!listaAdversarios.ContainsKey(NombreJugador))
-                        {
-                            ArrayList listaPartidaAdversario = new ArrayList();
-                            Adversario infoAd = new Adversario(juego.nombreJuego, juego.idjuego, PartidasGanadas, 1 - PartidasGanadas,1);
-                            listaPartidaAdversario.Add(infoAd);
-                            listaAdversarios.Add(NombreJugador, listaPartidaAdversario);
-                            //MessageBox.Show("guaardo a: " + NombreJugador);
+                        if (!listaAdversarios.ContainsKey(NombreJugadorPartida)){
+                            if (gano == true)
+                            {
+                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 1, 0, 1);
+                                ArrayList juegosAd = new ArrayList();
+                                juegosAd.Add(infojuegoad);
+                                listaAdversarios.Add(NombreJugadorPartida, juegosAd);
+                            }
+                            else
+                            {
+                               
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 0, 1, 1);
+                                    ArrayList juegosAd = new ArrayList();
+                                    juegosAd.Add(infojuegoad);
+                                    listaAdversarios.Add(NombreJugadorPartida, juegosAd);
+                                
+                            }
                         }
                         else
                         {
-                            Boolean tieneRegistradoJuego = false; 
-                            foreach(Adversario infoad in listaAdversarios[NombreJugador])
+                             ArrayList juegosAd = listaAdversarios[NombreJugadorPartida];
+                            Boolean EstaJuegolista = false;
+                             foreach(Adversario juegoaAd in juegosAd)
                             {
-                                //MessageBox.Show(listaAdversarios[NombreJugador].Count.ToString());
-                                if (infoad.nombreJuego.Equals(juego.nombreJuego) || infoad.nombreJuego.Equals(juego.idjuego))
+                                if (juegoaAd.nombreJuego.Equals(juego.nombreJuego))
                                 {
-                                    //MessageBox.Show("entro caballero "+NombreJugador);
-                                    infoad.numeroTotalPartidas++;
-                                    infoad.vecesGanadas = infoad.vecesGanadas + PartidasGanadas;
-                                    infoad.vecesPerdidas = infoad.numeroTotalPartidas - infoad.vecesGanadas;
-                                    tieneRegistradoJuego = true;
+                                    EstaJuegolista = true;
+                                    juegoaAd.numeroTotalPartidas++;
+                                    if (gano == true)
+                                    { 
+                                        juegoaAd.vecesGanadasdelAdversario++;
+                                    }
+                                    else
+                                    {
+                                        
+                                            juegoaAd.vecesPerdidadelAdversario++;
+                                        
+                                    }
                                 }
                             }
-                            if(tieneRegistradoJuego == false)
+                            if (EstaJuegolista == false)
                             {
-                                Adversario infoAd = new Adversario(juego.nombreJuego, juego.idjuego, PartidasGanadas, 1 - PartidasGanadas, 1);
-                                listaAdversarios[NombreJugador].Add(infoAd);
+                                if (gano == true)
+                                {
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 1, 0, 1);
+                                    listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
+                                }
+                                else
+                                {
+                                   
+                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 0, 1, 1);
+                                        listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
+                                    
+                                }
                             }
                         }
                     }
+
                 }
             }
             documentoPartidasJuego.Save(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);

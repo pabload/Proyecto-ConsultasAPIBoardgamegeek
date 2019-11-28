@@ -11,14 +11,14 @@ namespace Proyecto1
         public String nombreJuego;
         public String idjuego;
         public int numeroTotalPartidas;
-        public int vecesGanadas;
-        public int vecesPerdidas;
+        public int vecesGanadasdelAdversario;
+        public int vecesPerdidadelAdversario;
         public Adversario(String nom, String id,int ganadas, int perdidas,int totalPartidas)
         {
             nombreJuego = nom;
             idjuego = id;
-            vecesGanadas = ganadas;
-            vecesPerdidas = perdidas;
+            vecesGanadasdelAdversario = ganadas;
+            vecesPerdidadelAdversario = perdidas;
             numeroTotalPartidas = totalPartidas;
         }
     }

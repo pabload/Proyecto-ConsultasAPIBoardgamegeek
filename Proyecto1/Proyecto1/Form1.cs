@@ -80,13 +80,15 @@ namespace Proyecto1
                     listViewContenidos.Items.Clear();
                     treeViewAutores.Nodes.Clear();
                 }
+                MessageBox.Show(nuevoUsuario.listaAdversarios.Count.ToString());
                 foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
                 {
-                    //Console.WriteLine(adversario.Key+" tiene: "+adversario.Value.Count);
+                    Console.WriteLine(adversario.Key+" tiene: "+adversario.Value.Count);
+                    //MessageBox.Show(adversario.Key + " tiene: " + adversario.Value.Count);
                     foreach(Adversario infoad in adversario.Value)
                     {
-                        Console.WriteLine("idjuego: "+infoad.idjuego);
-                        Console.WriteLine(adversario.Key + " en el juego " + infoad.nombreJuego + " gano " + infoad.vecesGanadas + "  y perdio  " + infoad.vecesPerdidas);
+                        Console.WriteLine("idjuego: "+infoad.idjuego+" nombre adversario: "+adversario.Key);
+                        Console.WriteLine("el adversario gano: " + infoad.vecesGanadasdelAdversario + " perdio: " + infoad.vecesPerdidadelAdversario);
                     }
                 }
 
