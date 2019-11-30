@@ -228,7 +228,7 @@ public class Usuario
                         if (!listaAdversarios.ContainsKey(NombreJugadorPartida)){
                             if (gano == true)
                             {
-                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 1, 0, 1);
+                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego,juego.imagenJuego, NombreJugadorPartida,1, 0, 1);
                                 ArrayList juegosAd = new ArrayList();
                                 juegosAd.Add(infojuegoad);
                                 listaAdversarios.Add(NombreJugadorPartida, juegosAd);
@@ -236,7 +236,7 @@ public class Usuario
                             else
                             {
                                
-                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 0, 1, 1);
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego,NombreJugadorPartida,0, 1, 1);
                                     ArrayList juegosAd = new ArrayList();
                                     juegosAd.Add(infojuegoad);
                                     listaAdversarios.Add(NombreJugadorPartida, juegosAd);
@@ -269,13 +269,13 @@ public class Usuario
                             {
                                 if (gano == true)
                                 {
-                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 1, 0, 1);
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego,juego.imagenJuego ,NombreJugadorPartida,1, 0, 1);
                                     listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
                                 }
                                 else
                                 {
                                    
-                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, 0, 1, 1);
+                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego,NombreJugadorPartida,0, 1, 1);
                                         listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
                                     
                                 }
