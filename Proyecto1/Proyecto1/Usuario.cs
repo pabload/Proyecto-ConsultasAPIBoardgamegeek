@@ -32,12 +32,17 @@ public class Usuario
     XmlDocument documentoDatosJuego =  new XmlDocument();
     XmlDocument documentoPartidasJuego = new XmlDocument();
     int c = 0;
+    public Boolean Continuar = false;
     public Usuario(String nombreUsuario, String rutaCacheUsuarios, String rutaCacheJuegos)
     {
         rutaDeCacheUsuarios = rutaCacheUsuarios;
         nombreDelUsuario = nombreUsuario;
         ComprobarExistenciaCache(nombreUsuario, rutaCacheUsuarios);
-        AlamacenarDatosUsuario(rutaCacheJuegos);
+        if (Continuar == true)
+        {
+          AlamacenarDatosUsuario(rutaCacheJuegos);
+          
+        }
     }
     private void ComprobarExistenciaCache(string nombreUsuario, string rutaCacheUsuarios)
     {
@@ -45,26 +50,42 @@ public class Usuario
         {
             CargarArchivosCache(nombreUsuario, rutaCacheUsuarios);
             archivosEstaEnCache = true;
+            Continuar = true;
         }
         else
         {
-            CargarArchivosAPI(nombreUsuario, rutaCacheUsuarios);
-            archivosEstaEnCache = false;
+            if (VerificarConexion()== true)
+            {
+                CargarArchivosAPI(nombreUsuario, rutaCacheUsuarios);
+                archivosEstaEnCache = false;
+                Continuar = true;
+            }
+            else
+            {
+                MessageBox.Show("No cuentas con conexion y el usuario no se encuentra en cache");
+                Continuar = false; 
+            }
         }
     }
 
     private void CargarArchivosAPI(string nombreUsuario, string rutaCacheUsuarios)
     {
-       
-        Console.WriteLine("entro al elseEEEEEE");
-        documentoUsuario = Consultas.consultarAPIUsuario(nombreUsuario);
-        documentoJuegosUsuario = Consultas.consultarAPIColeccionJuegosUsuario(nombreUsuario);
-        nombre = documentoUsuario.DocumentElement.SelectSingleNode("/user/firstname").Attributes[0].Value;
-        if (nombre.Length != 0)
+       try
         {
-            Directory.CreateDirectory(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/");
-            documentoUsuario.Save(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/" + nombreUsuario);
-            documentoJuegosUsuario.Save(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/" + "ColeccionJuegos_" + nombreUsuario);
+            Console.WriteLine("entro al elseEEEEEE");
+            documentoUsuario = Consultas.consultarAPIUsuario(nombreUsuario);
+            documentoJuegosUsuario = Consultas.consultarAPIColeccionJuegosUsuario(nombreUsuario);
+            nombre = documentoUsuario.DocumentElement.SelectSingleNode("/user/firstname").Attributes[0].Value;
+            if (nombre.Length != 0)
+            {
+                Directory.CreateDirectory(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/");
+                documentoUsuario.Save(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/" + nombreUsuario);
+                documentoJuegosUsuario.Save(rutaCacheUsuarios + "/Carpeta_" + nombreUsuario + "/" + "ColeccionJuegos_" + nombreUsuario);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("erro es " + ex);
         }
     }
 
@@ -79,14 +100,14 @@ public class Usuario
         apellidos = documentoUsuario.DocumentElement.SelectSingleNode("/user/lastname").Attributes[0].Value;
         fechaRegistro = documentoUsuario.DocumentElement.SelectSingleNode("/user/yearregistered").Attributes[0].Value;
         idDelUsuario = documentoUsuario.DocumentElement.SelectSingleNode("/user").Attributes["id"].Value;
-        MessageBox.Show(idDelUsuario);
+        //MessageBox.Show(idDelUsuario);
         if (nombre.Length != 0)
         {
             ObtenerJuegosdeColeccion(archivosEstaEnCache,rutaCacheJuegos);
         }
         else
         {
-            MessageBox.Show("ENTRO 1");
+            //MessageBox.Show("ENTRO 1");
             return;
         }
     }
@@ -101,13 +122,14 @@ public class Usuario
             String idJuego = juego.Attributes["objectid"].Value;
             try
             {
-                if (ComprobarExistenciaCache == false)
+                if (ComprobarExistenciaCache == false&&!File.Exists(rutaCacheJuegos + "imagen_" + idJuego + ".jpg"))
                 {
                     c++;
                     Console.WriteLine("no esta en cache"+c);
                     WebClient cliente = new WebClient();
                     cliente.DownloadFile(link, rutaCacheJuegos + "imagen_" + idJuego + ".jpg");
-                    Thread.Sleep(700);
+                    Thread.Sleep(900);
+                    
                 }
                 link = rutaCacheJuegos + "imagen_" + idJuego + ".jpg";
                 Image imagenjuego = Image.FromFile(link);
@@ -159,7 +181,7 @@ public class Usuario
         }
         catch(Exception ex)
         {
-            MessageBox.Show("aki de error"+ex);
+            MessageBox.Show("erro en "+ex);
         }
 
     }
@@ -170,14 +192,17 @@ public class Usuario
         {
             if (File.Exists(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego))
             {
-                documentoPartidasJuego.Load(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);
                 string fecha = File.GetLastWriteTime(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego).ToString("dd-MM-yyyy");
-                //MessageBox.Show(fecha);
-                if (fecha == DateTime.Today.ToString("dd-MM-yyyy"))
+                if (!fecha.Equals(DateTime.Today.ToString("dd-MM-yyyy")))
                 {
-                    //MessageBox.Show("aaa oc");
+                    Console.WriteLine("se Actulizo Partidas");
+                    documentoPartidasJuego = Consultas.consultarDatosPartidasJuego(nombreDelUsuario, juego.idjuego);
                 }
-
+                else
+                {
+                    Console.WriteLine("No se actualizo");
+                    documentoPartidasJuego.Load(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);
+                }
             }
             else
             {
@@ -191,6 +216,10 @@ public class Usuario
                 String idPartida = partida.Attributes["id"].Value;
                 int numeroJugadores = listaJugadoresPartida.Count;
                 String NombreGanadorPartida = "";
+                String idGanadorPartida = "";
+                ArrayList ganadoresPartidas = new ArrayList();
+                int contadorvictorias = 0;
+                Boolean GanoUsuario =VerificarSiUsarioGano(listaJugadoresPartida,idPartida,juego.nombreJuego);
                 foreach (XmlNode jugador in listaJugadoresPartida)
                 {
                     String NombreJugadorPartida = jugador.Attributes["name"].Value;
@@ -201,8 +230,10 @@ public class Usuario
                     {
                         resultadoPartida = 1;
                         NombreGanadorPartida = NombreJugadorPartida;
+                        idGanadorPartida = idUsuarioJugador;
+                        ganadoresPartidas.Add(NombreGanadorPartida);
                         gano = true;
-                        //if (NombreGanadorPartida.ToLower().Equals(nombre)) { MessageBox.Show("el usuario gano este juego");}
+                        contadorvictorias++;
                     }
                     if (NombreJugadorPartida.ToLower().Equals(nombre)||idUsuarioJugador.Equals(idDelUsuario))
                     {
@@ -225,27 +256,34 @@ public class Usuario
                     /////////////////////////////////////////////////////////////////////////////////////////////////////
                     if (!NombreJugadorPartida.ToLower().Equals(nombre)&&!idUsuarioJugador.Equals(idDelUsuario))
                     {
+                        if (NombreJugadorPartida.Equals(""))
+                        {
+                            NombreJugadorPartida = "Sin nombre registrados";
+                        }
                         if (!listaAdversarios.ContainsKey(NombreJugadorPartida)){
                             if (gano == true)
                             {
-                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego,juego.imagenJuego, NombreJugadorPartida,1, 0, 1);
+                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego,juego.imagenJuego, NombreGanadorPartida,1, 0, 1);
+                                infojuegoad.NombresganadoresPartidas.Add(NombreGanadorPartida);
+                                infojuegoad.IdsganadoresPartidas.Add(idGanadorPartida);
                                 ArrayList juegosAd = new ArrayList();
                                 juegosAd.Add(infojuegoad);
-                                listaAdversarios.Add(NombreJugadorPartida, juegosAd);
+                                listaAdversarios.Add(NombreGanadorPartida, juegosAd);
                             }
                             else
                             {
-                               
-                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego,NombreJugadorPartida,0, 1, 1);
+                                if (GanoUsuario == true)
+                                {
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
                                     ArrayList juegosAd = new ArrayList();
                                     juegosAd.Add(infojuegoad);
                                     listaAdversarios.Add(NombreJugadorPartida, juegosAd);
-                                
+                                }                         
                             }
                         }
                         else
                         {
-                             ArrayList juegosAd = listaAdversarios[NombreJugadorPartida];
+                            ArrayList juegosAd = listaAdversarios[NombreJugadorPartida];
                             Boolean EstaJuegolista = false;
                              foreach(Adversario juegoaAd in juegosAd)
                             {
@@ -254,14 +292,16 @@ public class Usuario
                                     EstaJuegolista = true;
                                     juegoaAd.numeroTotalPartidas++;
                                     if (gano == true)
-                                    { 
+                                    {                    
                                         juegoaAd.vecesGanadasdelAdversario++;
                                     }
                                     else
                                     {
-                                        
+                                        if (GanoUsuario == true)
+                                        {
                                             juegoaAd.vecesPerdidadelAdversario++;
-                                        
+                                        }
+                                                             
                                     }
                                 }
                             }
@@ -274,15 +314,55 @@ public class Usuario
                                 }
                                 else
                                 {
-                                   
-                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego,NombreJugadorPartida,0, 1, 1);
+                                    if (GanoUsuario == true)
+                                    {
+                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
                                         listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
-                                    
+                                    }
+                                               
                                 }
                             }
                         }
                     }
 
+                }
+                if(juego.listaDeMecanicas.Contains("Cooperative Game"))
+                {
+                    if (contadorvictorias == 0)
+                    {
+                        if (!listaAdversarios.ContainsKey(juego.nombreJuego))
+                        {
+                            Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, juego.nombreJuego, 1, 0, 1);
+                            ArrayList juegosAd = new ArrayList();
+                            juegosAd.Add(infojuegoad);
+                            listaAdversarios.Add(juego.nombreJuego, juegosAd);
+                        }
+                        else
+                        {
+                            ArrayList lista = listaAdversarios[juego.nombreJuego];
+                            Adversario info = (Adversario)lista[0];
+                            info.vecesGanadasdelAdversario++;
+
+                        }
+                    }
+                    else
+                    {
+                        if (!listaAdversarios.ContainsKey(juego.nombreJuego))
+                        {
+                            Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, juego.nombreJuego, 0, 1, 1);
+                            ArrayList juegosAd = new ArrayList();
+                            juegosAd.Add(infojuegoad);
+                            listaAdversarios.Add(juego.nombreJuego, juegosAd);
+                        }
+                        else
+                        {
+                            ArrayList lista = listaAdversarios[juego.nombreJuego];
+                            Adversario info = (Adversario)lista[0];
+                            info.vecesPerdidadelAdversario++;
+
+                        }
+                    }
+                
                 }
             }
             documentoPartidasJuego.Save(rutaDeCacheUsuarios + "/Carpeta_" + nombreDelUsuario + "/" + "PartidasJuego_" + juego.idjuego);
@@ -292,6 +372,26 @@ public class Usuario
             MessageBox.Show(ex.ToString());
         }
     }
+
+    private Boolean VerificarSiUsarioGano(XmlNodeList listaJugadoresPartida,String idPartida,String nombrejuego)
+    {
+        Boolean ganoUsario = false;
+        ArrayList adversarios = new ArrayList();
+        foreach (XmlNode jugador in listaJugadoresPartida)
+        {
+            String NombreJugadorPartida = jugador.Attributes["name"].Value;
+            String idUsuarioJugador = jugador.Attributes["userid"].Value;
+            if (jugador.Attributes["win"].Value.Equals("1")&&(NombreJugadorPartida.ToLower().Equals(nombre)||idUsuarioJugador.Equals(idDelUsuario)))
+            {
+                //MessageBox.Show("gano juandalf  "+idPartida+" "+nombrejuego);
+                return ganoUsario = true;
+
+            }        
+        }
+
+        return ganoUsario;                          
+    }
+ 
 
     private void GuardarInformacionDiccionario(XmlNodeList lista, Dictionary<String, ArrayList> diccionario, ColeccionJuegosUsuario juego,ArrayList listadelJuego,String valorAtomar,String nombrelistaNodo)
     {
@@ -357,6 +457,21 @@ public class Usuario
 
 
             }
+        }
+    }
+    public static bool VerificarConexion()
+    {
+        try
+        {
+            using (var client = new WebClient())
+            using (var stream = client.OpenRead("http://www.google.com"))
+            {
+                return true;
+            }
+        }
+        catch
+        {
+            return false;
         }
     }
 }

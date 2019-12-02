@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace Proyecto1
         public int numeroTotalPartidas;
         public int vecesGanadasdelAdversario;
         public int vecesPerdidadelAdversario;
+        public ArrayList NombresganadoresPartidas = new ArrayList();
+        public ArrayList IdsganadoresPartidas = new ArrayList();
         public Adversario(String nom, String id,Image imagen,String adversario,int ganadas, int perdidas,int totalPartidas)
         {
             nombreJuego = nom;

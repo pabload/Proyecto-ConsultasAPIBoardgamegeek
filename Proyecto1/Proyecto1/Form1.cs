@@ -63,35 +63,43 @@ namespace Proyecto1
             try
             {
                 LimpiarTodo();
-                nuevoUsuario = new Usuario(textBoxNombreUsuario.Text, directorioCacheUsuarios,directorioCacheJuegos);
-                labelInformacionInferior.Text = "Cargando por favor espere..........";
-                Console.WriteLine(treeViewAutores.Nodes.Count+"aaaaaaaaaaaaaaaaaaaaaaaa");
-                if (nuevoUsuario.nombre.Length >0)
+                labelInformacionInferior.Text = "";
+                if (textBoxNombreUsuario.Text.Length != 0)
                 {
-                    Console.WriteLine("Empezo");
-                    CrearNodos(nuevoUsuario);
-                    //MessageBox.Show("ya termino");
+                    nuevoUsuario = new Usuario(textBoxNombreUsuario.Text, directorioCacheUsuarios, directorioCacheJuegos);
+                    if (nuevoUsuario.Continuar == true)
+                    {
+                        Console.WriteLine(treeViewAutores.Nodes.Count + "aaaaaaaaaaaaaaaaaaaaaaaa");
+                        if (nuevoUsuario.nombre.Length > 0)
+                        {
+                            Console.WriteLine("Empezo");
+                            CrearNodos(nuevoUsuario);
+                            //MessageBox.Show("ya termino");
+                        }
+                        else
+                        {
+
+                            MessageBox.Show("Usuario inexistente");
+                            textBoxNombreUsuario.Text = "";
+                            listViewContenidos.Items.Clear();
+                            treeViewAutores.Nodes.Clear();
+                        }
+                        foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
+                        {
+                            Console.WriteLine(adversario.Key + " tiene: " + adversario.Value.Count);
+                            //MessageBox.Show(adversario.Key + " tiene: " + adversario.Value.Count);
+                            foreach (Adversario infoad in adversario.Value)
+                            {
+                                Console.WriteLine("idjuego: " + infoad.idjuego + " nombre adversario: " + adversario.Key);
+                                Console.WriteLine("el adversario gano: " + infoad.vecesGanadasdelAdversario + " perdio: " + infoad.vecesPerdidadelAdversario);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-
-                    MessageBox.Show("NO EXISTE");
-                    textBoxNombreUsuario.Text = "";
-                    listViewContenidos.Items.Clear();
-                    treeViewAutores.Nodes.Clear();
+                    MessageBox.Show("Debes ingresar un nombre");
                 }
-                MessageBox.Show(nuevoUsuario.listaAdversarios.Count.ToString());
-                foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
-                {
-                    Console.WriteLine(adversario.Key+" tiene: "+adversario.Value.Count);
-                    //MessageBox.Show(adversario.Key + " tiene: " + adversario.Value.Count);
-                    foreach(Adversario infoad in adversario.Value)
-                    {
-                        Console.WriteLine("idjuego: "+infoad.idjuego+" nombre adversario: "+adversario.Key);
-                        Console.WriteLine("el adversario gano: " + infoad.vecesGanadasdelAdversario + " perdio: " + infoad.vecesPerdidadelAdversario);
-                    }
-                }
-
             }
             catch (Exception ex)
             {
@@ -132,20 +140,32 @@ namespace Proyecto1
 
         private void CrearNodos(Usuario nuevoUsuario)
         {
+            labelInformacionInferior.Text = "Cargando por favor espere..........";
             treeViewAutores.Nodes.Add("Autores", "Autores", "IconoAuto.png", "IconoAuto.png");
             treeViewAutores.Nodes.Add("Juegos", "Juegos", "juegos-de-mesa.png", "juegos-de-mesa.png");
             treeViewAutores.Nodes.Add("Adversarios", "Adversarios", "adversario.png", "adversario.png");
             InsertarNodosAutores(nuevoUsuario);
-            MessageBox.Show((imageListTreeview.Images.Count-6).ToString());
             numerodeJuegos = 0;
             InsertarNodos(nuevoUsuario, "Juegos", "Familias", nuevoUsuario.listaFamilias, "familia.png");
+            progressBar1.Value = 20;
+            System.Threading.Thread.Sleep(2000);
             InsertarNodos(nuevoUsuario, "Juegos", "Mecanicas", nuevoUsuario.listaMecanicas, "mecanicas.png");
+            progressBar1.Value = progressBar1.Value + 20;
+            System.Threading.Thread.Sleep(2000);
             InsertarNodos(nuevoUsuario, "Juegos", "Numero de jugadores", nuevoUsuario.listaNumeroJugadores, "numJugadores.png");
+            progressBar1.Value = progressBar1.Value + 20;
+            System.Threading.Thread.Sleep(2000);
             InsertarNodos(nuevoUsuario, "Juegos", "Categorias", nuevoUsuario.listaCategorias, "Categorias.png");
+            progressBar1.Value = progressBar1.Value + 20;
+            System.Threading.Thread.Sleep(2000);
             InsertarNodosAdversariosJuegos(nuevoUsuario, "Adversarios", "Juegos jugados con adversarios", nuevoUsuario.listaAdversarios, "juegos-de-mesa.png");
+            progressBar1.Value = progressBar1.Value + 20;
+            System.Threading.Thread.Sleep(2000);
             InsertarNodosAdversario(nuevoUsuario, "Adversarios", "Nombres de los adversarios", nuevoUsuario.listaAdversarios, "adversario.png");
+            progressBar1.Value = progressBar1.Value + 20;
+            System.Threading.Thread.Sleep(2000);
             progressBar1.Value = 0;
-            labelInformacionInferior.Text = "Informacion cargada correctamenete";
+            labelInformacionInferior.Text = "Informacion cargada correctamente";
 
 
 
@@ -206,8 +226,6 @@ namespace Proyecto1
                     }
 
                 }
-                MessageBox.Show(nuevoNodoPadre.Nodes.Count.ToString()+"aaaaaaaaaaaaaaa");
-                //progressBar1.Value = progressBar1.Value + 20;
             }
             catch (Exception ex)
             {
@@ -303,9 +321,7 @@ namespace Proyecto1
                     }
                     if (e.Node.Tag is Adversario)
                     {
-                        MessageBox.Show("es adversario");
-                        Adversario info = (Adversario)e.Node.Tag;
-                        Console.WriteLine(info.nombreJuego);
+                        MostrarDatosDeAdversarioJuegoElegido((Adversario)e.Node.Tag);
                     }
                     if (e.Node.Text.Equals("Nombres de los adversarios"))
                     {
@@ -314,8 +330,7 @@ namespace Proyecto1
                     }
                     if (e.Node.Parent.Text.Equals("Nombres de los adversarios"))
                     {
-                        MessageBox.Show("adversario"+e.Node.Tag.ToString());
-                        //CargarAdversarios(e.Node);
+                        MostrarDatosTotalesAdversarios((ArrayList)e.Node.Tag);
 
                     }
                 }
@@ -347,7 +362,7 @@ namespace Proyecto1
             listViewContenidos.Clear();
             foreach (TreeNode Adversario in node.Nodes)
             {
-                panelDatosJuegoElegido.SendToBack();
+                panelDatosInformacionEspecifica.SendToBack();
                 Adversario infoAd = (Adversario)Adversario.Tag;
                 ListViewItem item = new ListViewItem(Adversario.Text, "adversario.png");
                 item.Tag = infoAd;
@@ -360,7 +375,7 @@ namespace Proyecto1
             listViewContenidos.Clear();
             foreach (TreeNode adversario in node.Nodes)
             {
-                panelDatosJuegoElegido.SendToBack();
+                panelDatosInformacionEspecifica.SendToBack();
                 ArrayList info = (ArrayList)adversario.Tag;
                 ListViewItem item = new ListViewItem(adversario.Text, "adversario.png");
                 item.Tag = info;
@@ -374,7 +389,7 @@ namespace Proyecto1
             foreach (TreeNode juego in node.Nodes)
             {
                 //MessageBox.Show("entro" + juego.Tag.ToString());
-                panelDatosJuegoElegido.SendToBack();
+                panelDatosInformacionEspecifica.SendToBack();
                 ArrayList info = (ArrayList)juego.Tag;
                 Image imagejuego = ListaImagenes[juego.ImageKey];
                 imageListContendioListView.Images.Add(juego.ImageKey, imagejuego);
@@ -387,7 +402,7 @@ namespace Proyecto1
 
         private void CargarNombreJuegosAdversario(TreeNode node)
         {
-            panelDatosJuegoElegido.SendToBack();
+            panelDatosInformacionEspecifica.SendToBack();
             foreach (TreeNode tipo in node.Nodes)
             {
                 if (tipo.Text == "Juegos jugados con adversarios")
@@ -395,7 +410,7 @@ namespace Proyecto1
 
                     ListViewItem item = new ListViewItem(tipo.Text, 1);
                     item.Tag = tipo.Tag;
-                    MessageBox.Show(item.Tag.ToString());
+                    //MessageBox.Show(item.Tag.ToString());
                     item.ImageKey = "juegos-de-mesa.png";
                     listViewContenidos.Items.Add(item);
                     treeViewAutores.SelectedNode = null;
@@ -416,10 +431,9 @@ namespace Proyecto1
         private void CargarClasifiacionDejuegosPorNumeroJugadores(Dictionary<string, ArrayList> listaNumJuego,String keyimagen)
         {
             listViewContenidos.Items.Clear();
-            MessageBox.Show(keyimagen);
             foreach (KeyValuePair<string, ArrayList> numeroJugadores in listaNumJuego)
             {
-                panelDatosJuegoElegido.SendToBack();
+                panelDatosInformacionEspecifica.SendToBack();
                 ListViewItem item = new ListViewItem(numeroJugadores.Key, keyimagen);
                 item.Tag = numeroJugadores.Value;
                 listViewContenidos.Items.Add(item);
@@ -428,8 +442,10 @@ namespace Proyecto1
 
         private void CargarJuegoSeleccionado(ColeccionJuegosUsuario juego)
         {
+
           listViewContenidos.Items.Clear();
-          panelDatosJuegoElegido.BringToFront();
+          panelDatosInformacionEspecifica.BringToFront();
+          panelDatosAdversario.SendToBack();
           textBoxAutoresJuego.Clear();
           textBoxIlustradoresJuego.Clear();
           richTextBoxDescripcionJuego.Clear();
@@ -477,7 +493,7 @@ namespace Proyecto1
             listViewContenidos.Items.Clear();
             foreach (ColeccionJuegosUsuario juegoAutor in Juegos)
           {
-                panelDatosJuegoElegido.SendToBack();
+                panelDatosInformacionEspecifica.SendToBack();
                 imageListContendioListView.Images.Add(juegoAutor.idjuego, juegoAutor.imagenJuego);
                 ListViewItem item = new ListViewItem(juegoAutor.nombreJuego, juegoAutor.idjuego);
                 item.SubItems.Add(juegoAutor.idjuego);
@@ -491,7 +507,7 @@ namespace Proyecto1
         private void CargarAutores(TreeNode node)
         {
            
-            panelDatosJuegoElegido.SendToBack();
+            panelDatosInformacionEspecifica.SendToBack();
             foreach (TreeNode Autor in node.Nodes)
             {
                 treeViewAutores.SelectedNode = null;
@@ -506,7 +522,7 @@ namespace Proyecto1
         }
         private void CargarClasifiacionJuegos(TreeNode node)
         {
-            panelDatosJuegoElegido.SendToBack();
+            panelDatosInformacionEspecifica.SendToBack();
             int c = 1;
             foreach (TreeNode clasificacion in node.Nodes)
             {
@@ -545,11 +561,10 @@ namespace Proyecto1
 
         private void ListViewContenidos_Click(object sender, EventArgs e)
         {
-
+           
             if (listViewContenidos.SelectedItems.Count > 0)
             {
                 ListViewItem itemSeleccionado = listViewContenidos.SelectedItems[0];
-                //MessageBox.Show(itemSeleccionado.Tag.ToString());
                 //////////////adversarios/////////////////////////////////////
                 if(itemSeleccionado.Text.Equals("Juegos jugados con adversarios")|| (itemSeleccionado.Text.Equals("Nombres de los adversarios")))
                 {
@@ -572,25 +587,29 @@ namespace Proyecto1
                 {
                  if (itemSeleccionado.Tag is ArrayList)
                     {
-                        
+                    
                         ArrayList lista = (ArrayList)itemSeleccionado.Tag;
-                        if(lista[0] is ColeccionJuegosUsuario)
+                        
+                        if (lista[0] is ColeccionJuegosUsuario)
                         {
                             CargarJuegosClasificacionSeleccionada(lista);
                         }
                         if (lista[0] is Adversario &&!itemSeleccionado.ImageKey.Equals("adversario.png"))
                         {
-                            MessageBox.Show("entro");
+                           
                             TreeNode nodoreferencia = treeViewAutores.Nodes["Adversarios"].Nodes["Juegos jugados con adversarios"].Nodes[itemSeleccionado.Text];
                             CargarAdversarioJuegoSeleccionado(nodoreferencia);
-
                         }
+                        if (lista[0] is Adversario &&itemSeleccionado.ImageKey.Equals("adversario.png"))
+                        {
+                            MostrarDatosTotalesAdversarios((ArrayList)itemSeleccionado.Tag);
+                        }
+                      
                     }
                     if(itemSeleccionado.Tag is Adversario)
                     {
-                       
-                       
-                        //MessageBox.Show("hola juego:"+info.nombreJuego+"perdidad: "+info.vecesGanadasdelAdversario +"gano "+info.vecesPerdidadelAdversario);
+                      
+                       MostrarDatosDeAdversarioJuegoElegido((Adversario)itemSeleccionado.Tag); 
                     }
                     if (itemSeleccionado.Tag is ColeccionJuegosUsuario)
                     {
@@ -600,13 +619,48 @@ namespace Proyecto1
                     }
                     if (itemSeleccionado.Tag is Dictionary<String, ArrayList>)
                     {
-                        MessageBox.Show("eeeeeee");
                         Dictionary<String, ArrayList> ListaNumJuego = (Dictionary<String, ArrayList>)itemSeleccionado.Tag;
                         CargarClasifiacionDejuegosPorNumeroJugadores(ListaNumJuego, itemSeleccionado.ImageKey);
                     }
 
                 }
             }
+        }
+
+        private void MostrarDatosTotalesAdversarios(ArrayList juegos)
+        {
+            panelDatosInformacionEspecifica.BringToFront();
+            panelDatosAdversario.BringToFront();
+            labelInfoAdversario.Text = "Partidas jugadas en total";
+            dataGridViewAdversarios.Rows.Clear();
+            dataGridViewAdversarios.Columns.Clear();
+            dataGridViewAdversarios.Columns.Add("Nombre de juego", "Nombre de juego");
+            dataGridViewAdversarios.Columns.Add("Veces ganadas del usuario", "Veces ganadas del usuario");
+            dataGridViewAdversarios.Columns.Add("Veces ganadas del adversario", "Veces ganadas del adversario");
+            dataGridViewAdversarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewAdversarios.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            foreach (Adversario juego  in juegos)
+            {
+              dataGridViewAdversarios.Rows.Add(juego.nombreJuego,juego.vecesPerdidadelAdversario.ToString(),juego.vecesGanadasdelAdversario.ToString());
+            }
+           
+        }
+
+        private void MostrarDatosDeAdversarioJuegoElegido(Adversario info)
+        {
+            panelDatosInformacionEspecifica.BringToFront();
+            panelDatosAdversario.BringToFront();
+            labelInfoAdversario.Text = info.nombreJuego;
+            dataGridViewAdversarios.Rows.Clear();
+            dataGridViewAdversarios.Columns.Clear();
+            dataGridViewAdversarios.Columns.Add("Veces ganadas del usuario", "Veces ganadas del usuario");
+            dataGridViewAdversarios.Columns.Add("Veces ganadas del adversario", "Veces ganadas del adversario");
+            dataGridViewAdversarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewAdversarios.Rows.Add(info.vecesPerdidadelAdversario.ToString(), info.vecesGanadasdelAdversario.ToString());
+            dataGridViewAdversarios.Rows[0].Height = dataGridViewAdversarios.Height;
+            dataGridViewAdversarios.RowsDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+          
+
         }
 
         private void TreeViewAutores_BeforeExpand(object sender, TreeViewCancelEventArgs e)
@@ -625,6 +679,21 @@ namespace Proyecto1
         }
 
         private void Label3_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LabelNumeroTotalPartidas_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TextBoxNombreUsuario_TextChanged(object sender, EventArgs e)
         {
 
         }

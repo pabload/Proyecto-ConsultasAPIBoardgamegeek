@@ -3,6 +3,8 @@ using System.Web;
 using System.Xml;
 using System.Net;
 using System.IO;
+using System.Windows.Forms;
+
 public class Consultas
 {
     public Consultas()
@@ -35,9 +37,10 @@ public class Consultas
     }
     public static XmlDocument consultarAPIUsuario(string usuario)
     {
-        string URLConsulta = "https://boardgamegeek.com/xmlapi2/user?name=" + usuario;
-        return consultarAPI(URLConsulta);
-
+  
+            string URLConsulta = "https://boardgamegeek.com/xmlapi2/user?name=" + usuario;
+            return consultarAPI(URLConsulta); 
+        
     }
     public static XmlDocument consultarAPIJuego(string id)
     {
