@@ -272,12 +272,18 @@ public class Usuario
                             }
                             else
                             {
+                                //Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 0, 1);
+                                Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 0, 1);
+                                   ArrayList juegosAd = new ArrayList();
+                                   juegosAd.Add(infojuegoad);
+                                   listaAdversarios.Add(NombreJugadorPartida, juegosAd);
                                 if (GanoUsuario == true)
                                 {
-                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
+                                    infojuegoad.vecesPerdidadelAdversario++;
+                                    /*Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
                                     ArrayList juegosAd = new ArrayList();
                                     juegosAd.Add(infojuegoad);
-                                    listaAdversarios.Add(NombreJugadorPartida, juegosAd);
+                                    listaAdversarios.Add(NombreJugadorPartida, juegosAd);*/
                                 }                         
                             }
                         }
@@ -314,10 +320,13 @@ public class Usuario
                                 }
                                 else
                                 {
+                                    Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 0, 1);
+                                    listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
                                     if (GanoUsuario == true)
                                     {
-                                        Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
-                                        listaAdversarios[NombreJugadorPartida].Add(infojuegoad);
+                                        /* Adversario infojuegoad = new Adversario(juego.nombreJuego, juego.idjuego, juego.imagenJuego, NombreJugadorPartida, 0, 1, 1);
+                                         listaAdversarios[NombreJugadorPartida].Add(infojuegoad);*/
+                                        infojuegoad.vecesPerdidadelAdversario++;
                                     }
                                                
                                 }

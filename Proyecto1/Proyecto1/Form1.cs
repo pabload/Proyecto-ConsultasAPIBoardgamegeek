@@ -55,6 +55,8 @@ namespace Proyecto1
         {
             AsegurarExistenciaDirectorioCacheUsuarios();
             AsegurarExistenciaDirectorioCacheJuegos();
+            listViewContenidos.BringToFront();
+            this.dataGridViewAdversarios.Font = new Font("Arial", 12);
 
         }
 
@@ -122,6 +124,7 @@ namespace Proyecto1
             Image ImagenNumJugadores = Image.FromFile("numJugadores.png");
             Image ImagenCategorias = Image.FromFile("categoria.png");
             Image ImagenAdversario = Image.FromFile("adversario.png");
+            Image ImagenResumen = Image.FromFile("resumen.png");
             imageListTreeview.Images.Add("IconoAuto.png", ImagenAutores);
             imageListTreeview.Images.Add("juegos-de-mesa.png", ImagenJuegos);
             imageListTreeview.Images.Add("familia.png", ImagenFamilias);
@@ -129,6 +132,7 @@ namespace Proyecto1
             imageListTreeview.Images.Add("numJugadores.png", ImagenNumJugadores);
             imageListTreeview.Images.Add("Categorias.png", ImagenCategorias);
             imageListTreeview.Images.Add("adversario.png", ImagenAdversario);
+            imageListTreeview.Images.Add("resumen.png", ImagenResumen);
             imageListContendioListView.Images.Add("IconoAuto.png", ImagenAutores);
             imageListContendioListView.Images.Add("juegos-de-mesa.png", ImagenJuegos);
             imageListContendioListView.Images.Add("familia.png", ImagenFamilias);
@@ -136,6 +140,7 @@ namespace Proyecto1
             imageListContendioListView.Images.Add("numJugadores.png", ImagenNumJugadores);
             imageListContendioListView.Images.Add("Categorias.png", ImagenCategorias);
             imageListContendioListView.Images.Add("adversario.png", ImagenAdversario);
+            imageListContendioListView.Images.Add("resumen.png", ImagenResumen);
         }
 
         private void CrearNodos(Usuario nuevoUsuario)
@@ -144,6 +149,7 @@ namespace Proyecto1
             treeViewAutores.Nodes.Add("Autores", "Autores", "IconoAuto.png", "IconoAuto.png");
             treeViewAutores.Nodes.Add("Juegos", "Juegos", "juegos-de-mesa.png", "juegos-de-mesa.png");
             treeViewAutores.Nodes.Add("Adversarios", "Adversarios", "adversario.png", "adversario.png");
+            treeViewAutores.Nodes.Add("Resumen", "Resumen", "resumen.png", "resumen.png");
             InsertarNodosAutores(nuevoUsuario);
             numerodeJuegos = 0;
             InsertarNodos(nuevoUsuario, "Juegos", "Familias", nuevoUsuario.listaFamilias, "familia.png");
@@ -290,6 +296,18 @@ namespace Proyecto1
         private void TreeViewAutores_AfterSelect(object sender, TreeViewEventArgs e) {
 
             listViewContenidos.Items.Clear();
+            if (e.Node.Text.Equals("Resumen"))
+            {
+                listViewContenidos.SendToBack();
+                panelResumen.BringToFront();
+                TomarAutorConMasJuegos();
+                TomarAdversarioMasGanador();
+                TomarAdversarioMasPerdedor();
+                TomarJuegoMasJugado();
+                TomarTotalPartidaUsuario();
+                labelTotalJuegosUsuario.Text = nuevoUsuario.ImagenesJuegos.Count.ToString()+ " es el numero de juegos que el usuario tiene en su coleccion";
+                labelNombreUsuarioResumen.Text = "Resumen del usuario: "+nuevoUsuario.nombreDelUsuario;
+            }
             if (e.Node.Parent == null)
             {
                 String nombreNodo = e.Node.Text;
@@ -357,6 +375,101 @@ namespace Proyecto1
             
         }
 
+        private void TomarTotalPartidaUsuario()
+        {
+            ArrayList juegosYaContados = new ArrayList();
+            int totalPartidasUsuario = 0;
+            foreach (KeyValuePair<String, ArrayList> autor in nuevoUsuario.listaAutores)
+            {
+                foreach (ColeccionJuegosUsuario juego in autor.Value)
+                {
+                    if (!juegosYaContados.Contains(juego.nombreJuego))
+                    {
+                        totalPartidasUsuario = totalPartidasUsuario + juego.numeroDePartidas;
+                    }
+                }
+            }
+            //MessageBox.Show("total Partida: " + totalPartidasUsuario);
+        }
+
+        private void TomarJuegoMasJugado()
+        {
+            String nombreJuegoMasjugado = "";
+            String autorjuego = "";
+            int numeroMayoJugado = 0;
+            Image imagenJuego= null;
+            foreach (KeyValuePair<String, ArrayList> autor in nuevoUsuario.listaAutores)
+            {
+              foreach(ColeccionJuegosUsuario juego in autor.Value)
+                {
+                    if (juego.numeroDePartidas > numeroMayoJugado)
+                    {
+                        numeroMayoJugado = juego.numeroDePartidas;
+                        nombreJuegoMasjugado = juego.nombreJuego;
+                        imagenJuego = juego.imagenJuego;
+                        autorjuego = autor.Key;
+                    }
+                }
+            }
+            //MessageBox.Show("el juego mas jugafo es "+ nombreJuegoMasjugado);
+            labelJuegoMasJugado.Text = nombreJuegoMasjugado +" con "+numeroMayoJugado+ " partidas es el juego mas jugado por el usuario";
+            pictureBoxJuegoMasjugado.Image = imagenJuego;
+            
+        }
+
+        private void TomarAdversarioMasGanador()
+        {
+            int totalvictoriasTodos=0;
+            String NombreAdversario = "";
+            foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
+            {
+                int TotalVictoriasAdversario = 0;
+                foreach(Adversario Partida in adversario.Value)
+                {
+                    TotalVictoriasAdversario = TotalVictoriasAdversario + Partida.vecesGanadasdelAdversario;
+                }
+                if ((TotalVictoriasAdversario > totalvictoriasTodos)&&(!adversario.Key.Equals("Anonymous player")))
+                {
+                    totalvictoriasTodos = TotalVictoriasAdversario;
+                    NombreAdversario = adversario.Key;
+                }
+            }
+            labelNombreAdMasGanador.Text = NombreAdversario + " con " + totalvictoriasTodos + " victorias es el adversario con mas partidas ganadas";
+        }
+        private void TomarAdversarioMasPerdedor()
+        {
+            int totalPerdidasTodos = 0;
+            String NombreAdversario = "";
+            foreach (KeyValuePair<String, ArrayList> adversario in nuevoUsuario.listaAdversarios)
+            {
+                int TotalPerdidasDelAdversario = 0;
+                foreach (Adversario Partida in adversario.Value)
+                {
+                    TotalPerdidasDelAdversario = TotalPerdidasDelAdversario + Partida.vecesPerdidadelAdversario;
+                }
+                if ((TotalPerdidasDelAdversario > totalPerdidasTodos) && (!adversario.Key.Equals("Anonymous player")))
+                {
+                    totalPerdidasTodos= TotalPerdidasDelAdversario;
+                    NombreAdversario = adversario.Key;
+                }
+            }
+            labelNombreAdMasPerdedor.Text = NombreAdversario + " con " + totalPerdidasTodos + " derrotas es el adversario con mas partidas perdidas";
+        }
+
+        private void TomarAutorConMasJuegos()
+        {
+            String AutorConMasJuegos="";
+            int NumeroMayorJuegos = 0;
+            foreach(TreeNode autor in treeViewAutores.Nodes["Autores"].Nodes)
+            {
+                if (autor.Nodes.Count > NumeroMayorJuegos)
+                {
+                    AutorConMasJuegos = autor.Text;
+                    NumeroMayorJuegos = autor.Nodes.Count;
+                }
+            }
+            labelNombreAutorMasJuegos.Text = AutorConMasJuegos+ " es el autor con el mayor numero de juegos dentro de la coleccion del usuario";
+        }
         private void CargarAdversarioJuegoSeleccionado(TreeNode node)
         {
             listViewContenidos.Clear();
@@ -446,6 +559,7 @@ namespace Proyecto1
           listViewContenidos.Items.Clear();
           panelDatosInformacionEspecifica.BringToFront();
           panelDatosAdversario.SendToBack();
+          panelResumen.SendToBack();
           textBoxAutoresJuego.Clear();
           textBoxIlustradoresJuego.Clear();
           richTextBoxDescripcionJuego.Clear();
@@ -630,10 +744,12 @@ namespace Proyecto1
         private void MostrarDatosTotalesAdversarios(ArrayList juegos)
         {
             panelDatosInformacionEspecifica.BringToFront();
+            panelResumen.SendToBack();
             panelDatosAdversario.BringToFront();
             labelInfoAdversario.Text = "Partidas jugadas en total";
             dataGridViewAdversarios.Rows.Clear();
             dataGridViewAdversarios.Columns.Clear();
+            this.dataGridViewAdversarios.DefaultCellStyle.Font = new Font("Arial", 12);
             dataGridViewAdversarios.Columns.Add("Nombre de juego", "Nombre de juego");
             dataGridViewAdversarios.Columns.Add("Veces ganadas del usuario", "Veces ganadas del usuario");
             dataGridViewAdversarios.Columns.Add("Veces ganadas del adversario", "Veces ganadas del adversario");
@@ -653,6 +769,8 @@ namespace Proyecto1
             labelInfoAdversario.Text = info.nombreJuego;
             dataGridViewAdversarios.Rows.Clear();
             dataGridViewAdversarios.Columns.Clear();
+            this.dataGridViewAdversarios.Font = new Font("Arial", 12);
+            this.dataGridViewAdversarios.DefaultCellStyle.Font = new Font("Arial", 30);
             dataGridViewAdversarios.Columns.Add("Veces ganadas del usuario", "Veces ganadas del usuario");
             dataGridViewAdversarios.Columns.Add("Veces ganadas del adversario", "Veces ganadas del adversario");
             dataGridViewAdversarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -694,6 +812,21 @@ namespace Proyecto1
         }
 
         private void TextBoxNombreUsuario_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LabelNombreUsuarioResumen_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LabelJuegoMasJugado_Click(object sender, EventArgs e)
         {
 
         }

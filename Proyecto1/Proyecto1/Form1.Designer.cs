@@ -47,6 +47,24 @@ namespace Proyecto1
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panelDatosInformacionEspecifica = new System.Windows.Forms.Panel();
+            this.panelResumen = new System.Windows.Forms.Panel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.labelNombreAutorMasJuegos = new System.Windows.Forms.Label();
+            this.pictureBoxAutorMas = new System.Windows.Forms.PictureBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.labelTotalJuegosUsuario = new System.Windows.Forms.Label();
+            this.pictureBoxTotalJuegos = new System.Windows.Forms.PictureBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.labelJuegoMasJugado = new System.Windows.Forms.Label();
+            this.pictureBoxJuegoMasjugado = new System.Windows.Forms.PictureBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.labelNombreAdMasGanador = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.labelNombreAdMasPerdedor = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.labelNombreUsuarioResumen = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.NumeroJugadores = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.partidasGanadas = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,6 +87,18 @@ namespace Proyecto1
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panelDatosInformacionEspecifica.SuspendLayout();
+            this.panelResumen.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAutorMas)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTotalJuegos)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJuegoMasjugado)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImagenJuego)).BeginInit();
@@ -98,7 +128,7 @@ namespace Proyecto1
             this.btnBuscarUsuario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBuscarUsuario.Font = new System.Drawing.Font("Arial", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBuscarUsuario.ForeColor = System.Drawing.Color.White;
-            this.btnBuscarUsuario.Location = new System.Drawing.Point(487, 8);
+            this.btnBuscarUsuario.Location = new System.Drawing.Point(487, 7);
             this.btnBuscarUsuario.Margin = new System.Windows.Forms.Padding(4);
             this.btnBuscarUsuario.Name = "btnBuscarUsuario";
             this.btnBuscarUsuario.Size = new System.Drawing.Size(165, 41);
@@ -111,11 +141,11 @@ namespace Proyecto1
             // textBoxNombreUsuario
             // 
             this.textBoxNombreUsuario.Font = new System.Drawing.Font("Arial Narrow", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxNombreUsuario.Location = new System.Drawing.Point(270, 8);
+            this.textBoxNombreUsuario.Location = new System.Drawing.Point(269, 7);
             this.textBoxNombreUsuario.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxNombreUsuario.Multiline = true;
             this.textBoxNombreUsuario.Name = "textBoxNombreUsuario";
-            this.textBoxNombreUsuario.Size = new System.Drawing.Size(210, 41);
+            this.textBoxNombreUsuario.Size = new System.Drawing.Size(209, 41);
             this.textBoxNombreUsuario.TabIndex = 6;
             this.textBoxNombreUsuario.TextChanged += new System.EventHandler(this.TextBoxNombreUsuario_TextChanged);
             // 
@@ -124,7 +154,7 @@ namespace Proyecto1
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(10, 13);
+            this.label1.Location = new System.Drawing.Point(11, 14);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(246, 29);
@@ -134,7 +164,7 @@ namespace Proyecto1
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.panel2.BackColor = System.Drawing.Color.MidnightBlue;
             this.panel2.Controls.Add(this.labelInformacionInferior);
             this.panel2.Controls.Add(this.progressBar1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -204,6 +234,7 @@ namespace Proyecto1
             this.columnHeader2,
             this.columnHeader3});
             this.listViewContenidos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewContenidos.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listViewContenidos.LargeImageList = this.imageListContendioListView;
             this.listViewContenidos.Location = new System.Drawing.Point(0, 0);
             this.listViewContenidos.Margin = new System.Windows.Forms.Padding(4);
@@ -232,6 +263,7 @@ namespace Proyecto1
             // panelDatosInformacionEspecifica
             // 
             this.panelDatosInformacionEspecifica.BackColor = System.Drawing.Color.Gainsboro;
+            this.panelDatosInformacionEspecifica.Controls.Add(this.panelResumen);
             this.panelDatosInformacionEspecifica.Controls.Add(this.dataGridView1);
             this.panelDatosInformacionEspecifica.Controls.Add(this.richTextBoxDescripcionJuego);
             this.panelDatosInformacionEspecifica.Controls.Add(this.panel4);
@@ -243,6 +275,196 @@ namespace Proyecto1
             this.panelDatosInformacionEspecifica.Name = "panelDatosInformacionEspecifica";
             this.panelDatosInformacionEspecifica.Size = new System.Drawing.Size(995, 462);
             this.panelDatosInformacionEspecifica.TabIndex = 6;
+            // 
+            // panelResumen
+            // 
+            this.panelResumen.Controls.Add(this.tabControl1);
+            this.panelResumen.Controls.Add(this.labelNombreUsuarioResumen);
+            this.panelResumen.Location = new System.Drawing.Point(0, 0);
+            this.panelResumen.Name = "panelResumen";
+            this.panelResumen.Size = new System.Drawing.Size(995, 495);
+            this.panelResumen.TabIndex = 13;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Location = new System.Drawing.Point(132, 85);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(788, 347);
+            this.tabControl1.TabIndex = 2;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.labelNombreAutorMasJuegos);
+            this.tabPage1.Controls.Add(this.pictureBoxAutorMas);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(780, 318);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Autor con mas juegos ";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // labelNombreAutorMasJuegos
+            // 
+            this.labelNombreAutorMasJuegos.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNombreAutorMasJuegos.Location = new System.Drawing.Point(163, 158);
+            this.labelNombreAutorMasJuegos.Name = "labelNombreAutorMasJuegos";
+            this.labelNombreAutorMasJuegos.Size = new System.Drawing.Size(444, 138);
+            this.labelNombreAutorMasJuegos.TabIndex = 1;
+            this.labelNombreAutorMasJuegos.Text = "label7";
+            this.labelNombreAutorMasJuegos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBoxAutorMas
+            // 
+            this.pictureBoxAutorMas.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxAutorMas.Image")));
+            this.pictureBoxAutorMas.Location = new System.Drawing.Point(319, 15);
+            this.pictureBoxAutorMas.Name = "pictureBoxAutorMas";
+            this.pictureBoxAutorMas.Size = new System.Drawing.Size(134, 136);
+            this.pictureBoxAutorMas.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxAutorMas.TabIndex = 0;
+            this.pictureBoxAutorMas.TabStop = false;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.labelTotalJuegosUsuario);
+            this.tabPage2.Controls.Add(this.pictureBoxTotalJuegos);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(780, 318);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Total de juegos en coleccion";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // labelTotalJuegosUsuario
+            // 
+            this.labelTotalJuegosUsuario.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTotalJuegosUsuario.Location = new System.Drawing.Point(175, 165);
+            this.labelTotalJuegosUsuario.Name = "labelTotalJuegosUsuario";
+            this.labelTotalJuegosUsuario.Size = new System.Drawing.Size(444, 132);
+            this.labelTotalJuegosUsuario.TabIndex = 2;
+            this.labelTotalJuegosUsuario.Text = "label7";
+            this.labelTotalJuegosUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBoxTotalJuegos
+            // 
+            this.pictureBoxTotalJuegos.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxTotalJuegos.Image")));
+            this.pictureBoxTotalJuegos.Location = new System.Drawing.Point(319, 17);
+            this.pictureBoxTotalJuegos.Name = "pictureBoxTotalJuegos";
+            this.pictureBoxTotalJuegos.Size = new System.Drawing.Size(134, 136);
+            this.pictureBoxTotalJuegos.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxTotalJuegos.TabIndex = 1;
+            this.pictureBoxTotalJuegos.TabStop = false;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.labelJuegoMasJugado);
+            this.tabPage3.Controls.Add(this.pictureBoxJuegoMasjugado);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(780, 318);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Juego mas jugado";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // labelJuegoMasJugado
+            // 
+            this.labelJuegoMasJugado.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelJuegoMasJugado.Location = new System.Drawing.Point(174, 154);
+            this.labelJuegoMasJugado.Name = "labelJuegoMasJugado";
+            this.labelJuegoMasJugado.Size = new System.Drawing.Size(444, 136);
+            this.labelJuegoMasJugado.TabIndex = 3;
+            this.labelJuegoMasJugado.Text = "label7";
+            this.labelJuegoMasJugado.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelJuegoMasJugado.Click += new System.EventHandler(this.LabelJuegoMasJugado_Click);
+            // 
+            // pictureBoxJuegoMasjugado
+            // 
+            this.pictureBoxJuegoMasjugado.Location = new System.Drawing.Point(319, 15);
+            this.pictureBoxJuegoMasjugado.Name = "pictureBoxJuegoMasjugado";
+            this.pictureBoxJuegoMasjugado.Size = new System.Drawing.Size(134, 136);
+            this.pictureBoxJuegoMasjugado.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxJuegoMasjugado.TabIndex = 2;
+            this.pictureBoxJuegoMasjugado.TabStop = false;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.labelNombreAdMasGanador);
+            this.tabPage4.Controls.Add(this.pictureBox1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(780, 318);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Adversario mas ganador";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // labelNombreAdMasGanador
+            // 
+            this.labelNombreAdMasGanador.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNombreAdMasGanador.Location = new System.Drawing.Point(162, 153);
+            this.labelNombreAdMasGanador.Name = "labelNombreAdMasGanador";
+            this.labelNombreAdMasGanador.Size = new System.Drawing.Size(444, 149);
+            this.labelNombreAdMasGanador.TabIndex = 4;
+            this.labelNombreAdMasGanador.Text = "label7";
+            this.labelNombreAdMasGanador.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(319, 14);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(134, 136);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.labelNombreAdMasPerdedor);
+            this.tabPage5.Controls.Add(this.pictureBox2);
+            this.tabPage5.Location = new System.Drawing.Point(4, 25);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(780, 318);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Adversario mas perdedor";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // labelNombreAdMasPerdedor
+            // 
+            this.labelNombreAdMasPerdedor.Font = new System.Drawing.Font("Arial Narrow", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNombreAdMasPerdedor.Location = new System.Drawing.Point(170, 154);
+            this.labelNombreAdMasPerdedor.Name = "labelNombreAdMasPerdedor";
+            this.labelNombreAdMasPerdedor.Size = new System.Drawing.Size(444, 140);
+            this.labelNombreAdMasPerdedor.TabIndex = 5;
+            this.labelNombreAdMasPerdedor.Text = "label7";
+            this.labelNombreAdMasPerdedor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(319, 15);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(134, 136);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 4;
+            this.pictureBox2.TabStop = false;
+            // 
+            // labelNombreUsuarioResumen
+            // 
+            this.labelNombreUsuarioResumen.Font = new System.Drawing.Font("Arial Narrow", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNombreUsuarioResumen.Location = new System.Drawing.Point(130, 25);
+            this.labelNombreUsuarioResumen.Name = "labelNombreUsuarioResumen";
+            this.labelNombreUsuarioResumen.Size = new System.Drawing.Size(788, 57);
+            this.labelNombreUsuarioResumen.TabIndex = 1;
+            this.labelNombreUsuarioResumen.Text = "(nombre Usuario)";
+            this.labelNombreUsuarioResumen.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelNombreUsuarioResumen.Click += new System.EventHandler(this.LabelNombreUsuarioResumen_Click);
             // 
             // dataGridView1
             // 
@@ -261,7 +483,7 @@ namespace Proyecto1
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(400, 164);
+            this.dataGridView1.Size = new System.Drawing.Size(438, 202);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             // 
@@ -292,7 +514,7 @@ namespace Proyecto1
             this.richTextBoxDescripcionJuego.Location = new System.Drawing.Point(244, 233);
             this.richTextBoxDescripcionJuego.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.richTextBoxDescripcionJuego.Name = "richTextBoxDescripcionJuego";
-            this.richTextBoxDescripcionJuego.Size = new System.Drawing.Size(304, 164);
+            this.richTextBoxDescripcionJuego.Size = new System.Drawing.Size(304, 202);
             this.richTextBoxDescripcionJuego.TabIndex = 9;
             this.richTextBoxDescripcionJuego.Text = "";
             // 
@@ -309,7 +531,7 @@ namespace Proyecto1
             this.panel4.Location = new System.Drawing.Point(244, 27);
             this.panel4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(707, 210);
+            this.panel4.Size = new System.Drawing.Size(742, 210);
             this.panel4.TabIndex = 10;
             // 
             // labelNumeroTotalPartidas
@@ -366,7 +588,7 @@ namespace Proyecto1
             this.textBoxIlustradoresJuego.Multiline = true;
             this.textBoxIlustradoresJuego.Name = "textBoxIlustradoresJuego";
             this.textBoxIlustradoresJuego.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxIlustradoresJuego.Size = new System.Drawing.Size(306, 29);
+            this.textBoxIlustradoresJuego.Size = new System.Drawing.Size(305, 29);
             this.textBoxIlustradoresJuego.TabIndex = 8;
             // 
             // label4
@@ -402,10 +624,10 @@ namespace Proyecto1
             // 
             // pictureBoxImagenJuego
             // 
-            this.pictureBoxImagenJuego.Location = new System.Drawing.Point(23, 27);
+            this.pictureBoxImagenJuego.Location = new System.Drawing.Point(11, 27);
             this.pictureBoxImagenJuego.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxImagenJuego.Name = "pictureBoxImagenJuego";
-            this.pictureBoxImagenJuego.Size = new System.Drawing.Size(224, 369);
+            this.pictureBoxImagenJuego.Size = new System.Drawing.Size(236, 408);
             this.pictureBoxImagenJuego.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxImagenJuego.TabIndex = 0;
             this.pictureBoxImagenJuego.TabStop = false;
@@ -414,9 +636,10 @@ namespace Proyecto1
             // 
             this.panelDatosAdversario.Controls.Add(this.labelInfoAdversario);
             this.panelDatosAdversario.Controls.Add(this.dataGridViewAdversarios);
-            this.panelDatosAdversario.Location = new System.Drawing.Point(23, 26);
+            this.panelDatosAdversario.Location = new System.Drawing.Point(11, 26);
+            this.panelDatosAdversario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelDatosAdversario.Name = "panelDatosAdversario";
-            this.panelDatosAdversario.Size = new System.Drawing.Size(928, 370);
+            this.panelDatosAdversario.Size = new System.Drawing.Size(975, 409);
             this.panelDatosAdversario.TabIndex = 12;
             // 
             // labelInfoAdversario
@@ -424,7 +647,7 @@ namespace Proyecto1
             this.labelInfoAdversario.Font = new System.Drawing.Font("Arial Narrow", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelInfoAdversario.Location = new System.Drawing.Point(3, 14);
             this.labelInfoAdversario.Name = "labelInfoAdversario";
-            this.labelInfoAdversario.Size = new System.Drawing.Size(922, 33);
+            this.labelInfoAdversario.Size = new System.Drawing.Size(923, 33);
             this.labelInfoAdversario.TabIndex = 0;
             this.labelInfoAdversario.Text = "label6";
             this.labelInfoAdversario.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -435,17 +658,18 @@ namespace Proyecto1
             this.dataGridViewAdversarios.AllowUserToDeleteRows = false;
             this.dataGridViewAdversarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewAdversarios.Location = new System.Drawing.Point(3, 50);
+            this.dataGridViewAdversarios.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridViewAdversarios.Name = "dataGridViewAdversarios";
             this.dataGridViewAdversarios.ReadOnly = true;
             this.dataGridViewAdversarios.RowHeadersWidth = 51;
             this.dataGridViewAdversarios.RowTemplate.Height = 24;
-            this.dataGridViewAdversarios.Size = new System.Drawing.Size(922, 317);
+            this.dataGridViewAdversarios.Size = new System.Drawing.Size(972, 359);
             this.dataGridViewAdversarios.TabIndex = 1;
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.listViewContenidos);
             this.panel3.Controls.Add(this.panelDatosInformacionEspecifica);
+            this.panel3.Controls.Add(this.listViewContenidos);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(209, 60);
             this.panel3.Margin = new System.Windows.Forms.Padding(4);
@@ -463,7 +687,9 @@ namespace Proyecto1
             this.Controls.Add(this.treeViewAutores);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Consultas BoardGameGeek";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -472,6 +698,18 @@ namespace Proyecto1
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panelDatosInformacionEspecifica.ResumeLayout(false);
+            this.panelResumen.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAutorMas)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTotalJuegos)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxJuegoMasjugado)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
@@ -528,6 +766,24 @@ namespace Proyecto1
         private System.Windows.Forms.Panel panelDatosAdversario;
         private System.Windows.Forms.DataGridView dataGridViewAdversarios;
         private System.Windows.Forms.Label labelInfoAdversario;
+        private System.Windows.Forms.Panel panelResumen;
+        private System.Windows.Forms.Label labelNombreUsuarioResumen;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label labelNombreAutorMasJuegos;
+        private System.Windows.Forms.PictureBox pictureBoxAutorMas;
+        private System.Windows.Forms.PictureBox pictureBoxTotalJuegos;
+        private System.Windows.Forms.Label labelTotalJuegosUsuario;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label labelJuegoMasJugado;
+        private System.Windows.Forms.PictureBox pictureBoxJuegoMasjugado;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label labelNombreAdMasGanador;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Label labelNombreAdMasPerdedor;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 
